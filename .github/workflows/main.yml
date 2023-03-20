@@ -1,19 +1,34 @@
-name: Flutter Web Deploy
+name: Flutter Web
 on:
   push:
     branches:
       - main
 jobs:
-  build:    
+  build:
+    name: Build Web
+    env:
+      commit_secret: ${{secrets.commit_secret}}
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-      - run: flutter build web --release --base-href /flutter_web/
-      - run: git config user.name github-actions
-      - run: git config user.email github-actions@github.com
-      - run: git --work-tree build/web add --all
-      - run: git commit -m "Automatic deployment by github-actions"
-      - run: git remote add origin https://${{secrets.commit_secret}}@github.com/dannellim/flutter_room_booking_app.git
-      - run: git push origin HEAD:gh-pages --force
+        with:
+          channel: 'stable'
+      - run: flutter config --enable-web
+      - run: flutter pub get
+      - run: flutter build web --release --no-sound-null-safety
+      - run: |
+          cd build/web
+          git init
+          # type configurations: your user.email and user.name followed lines 
+          # git config --global user.email your_email 
+          # git config --global user.name your_name 
+          git config --global user.email dannel_lim@hotmail.com
+          git config --global user.name dannel_lim
+          git status
+          # change this remote url for examle your remote url is https://github.com/onatcipli/flutter_web.git then the following:
+          git remote add origin https://dannellim:${{github.token}}@github.com/${{github.repository}}.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "update"
+          git push origin gh-pages -f
