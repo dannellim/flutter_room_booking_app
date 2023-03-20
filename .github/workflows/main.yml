@@ -15,4 +15,5 @@ jobs:
       - run: git config user.email github-actions@github.com
       - run: git --work-tree build/web add --all
       - run: git commit -m "Automatic deployment by github-actions"
+      - run: git remote add origin https://${{secrets.commit_secret}}@github.com/dannellim/flutter_room_booking_app.git
       - run: git push origin HEAD:gh-pages --force
