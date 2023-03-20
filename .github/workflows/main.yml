@@ -7,10 +7,12 @@ jobs:
   build:
     name: Build Web
     env:
-      commit_secret: ${{secrets.commit_secret}}
+      commit_secret: ${{secrets.COMMIT_SECRET}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.COMMIT_SECRET }}
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
