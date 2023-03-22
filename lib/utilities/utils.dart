@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 class Utils {
   static bool isEmailValid(String email) {
     return RegExp(
@@ -23,5 +26,33 @@ class Utils {
 
   static bool is1SpecChar(String text) {
     return RegExp(r"(?=.*\W)").hasMatch(text);
+  }
+
+  static void showAlertDialog(
+      BuildContext context, String btnText, String title, String message) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text(btnText),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

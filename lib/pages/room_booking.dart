@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/rm_booking.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/cal_utils.dart';
+import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/widgets/nav_drawer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -45,6 +46,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
     equals: isSameDay,
     hashCode: getHashCode,
   );
+
+  bool get canClearSelection =>
+      _selectedDays.isNotEmpty || _rangeStart != null || _rangeEnd != null;
 
   @override
   void initState() {
@@ -147,10 +151,19 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 _bookings = snapshot.data!;
-                _selectedEvents.value = snapshot.data!
-                    .where((booking) => booking.startDate.valueOrThrow.contains(
-                        DateFormat("yyyy-MM-dd").format(_selectedDay!)))
-                    .toList();
+                if (_selectedDay == null) {
+                  _selectedEvents.value = snapshot.data!
+                      .where((booking) => booking.startDate.valueOrThrow
+                          .contains(
+                              DateFormat("yyyy-MM-dd").format(_rangeStart!)))
+                      .toList();
+                } else {
+                  _selectedEvents.value = snapshot.data!
+                      .where((booking) => booking.startDate.valueOrThrow
+                          .contains(
+                              DateFormat("yyyy-MM-dd").format(_selectedDay!)))
+                      .toList();
+                }
               }
               return Column(
                 children: [
@@ -180,10 +193,19 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                           MediaQuery.of(context).size.height * 0.05),
                     ),
                     onPressed: () {
+                      if (_rangeSelectionMode == RangeSelectionMode.toggledOn &&
+                          _rangeEnd == null) {
+                        Utils.showAlertDialog(
+                            context,
+                            "OK",
+                            "End date not selected!",
+                            "Please click an end date for your range selection");
+                        return;
+                      }
                       _timeStart = const TimeOfDay(hour: 08, minute: 0);
                       _timeEnd = const TimeOfDay(hour: 22, minute: 0);
-                      _rangeStart ??= _selectedDay;
-                      _rangeEnd ??= _selectedDay;
+                      _rangeStart = _rangeStart ?? _selectedDay;
+                      _rangeEnd = _rangeEnd ?? _selectedDay;
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -657,24 +679,59 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   }
 
   saveRoomBooking() async {
-    // if (kDebugMode) {
-    //   print("_selectedDay $_selectedDay");
-    //   print("_rangeStart $_rangeStart");
-    //   print("_rangeEnd $_rangeEnd");
-    //   print("_timeStart $_timeStart");
-    //   print("_timeEnd $_timeEnd");
-    //   print("roomDropdownValue $roomDropdownValue");
-    //   print("reasonDropdownValue $reasonDropdownValue");
-    // }
-    await dbRmBookingProvider.saveRmBooking(DbRmBooking()
-      ..id = DateTime.now().millisecondsSinceEpoch
-      ..startDate.v = DateFormat("yyyy-MM-dd").format(_rangeStart!)
-      ..startTime.v = _timeStart.format(context)
-      ..endDate.v = DateFormat("yyyy-MM-dd").format(_rangeEnd!)
-      ..endTime.v = _timeEnd.format(context)
-      ..room.v = roomDropdownValue
-      ..reason.v = reasonDropdownValue
-      ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
-    _selectedEvents.value = await _getEventsForDay(_selectedDay!);
+    if (kDebugMode) {
+      print("_selectedDay $_selectedDay");
+      print("_rangeStart $_rangeStart");
+      print("_rangeEnd $_rangeEnd");
+      print("_timeStart $_timeStart");
+      print("_timeEnd $_timeEnd");
+      print("roomDropdownValue $roomDropdownValue");
+      print("reasonDropdownValue $reasonDropdownValue");
+      print("_rangeSelectionMode $_rangeSelectionMode");
+    }
+    if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+      var days = daysInRange(_rangeStart!, _rangeEnd!);
+      var numDays = days.length;
+      print("numberOfDays $numDays");
+      for (var day in days) {
+        await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+          ..id = DateTime.now().millisecondsSinceEpoch
+          ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+          ..startTime.v = _timeStart.format(context)
+          ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+          ..endTime.v = _timeEnd.format(context)
+          ..room.v = roomDropdownValue
+          ..reason.v = reasonDropdownValue
+          ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+      }
+    } else {
+      await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+        ..id = DateTime.now().millisecondsSinceEpoch
+        ..startDate.v = DateFormat("yyyy-MM-dd").format(_rangeStart!)
+        ..startTime.v = _timeStart.format(context)
+        ..endDate.v = DateFormat("yyyy-MM-dd").format(_rangeEnd!)
+        ..endTime.v = _timeEnd.format(context)
+        ..room.v = roomDropdownValue
+        ..reason.v = reasonDropdownValue
+        ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+    }
+    if (_selectedDay == null) {
+      _selectedEvents.value =
+          await _getEventsForRange(_rangeStart!, _rangeEnd!);
+    } else {
+      _selectedEvents.value = await _getEventsForDay(_selectedDay!);
+    }
+    clearEverything();
+  }
+
+  clearEverything() {
+    setState(() {
+      _selectedDay = _selectedDay ?? _rangeStart;
+      _rangeStart = null;
+      _rangeEnd = null;
+      _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      _selectedDays.clear();
+      _selectedEvents.value = [];
+    });
   }
 }
