@@ -11,3 +11,18 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
   );
 }
 
+DateTime lastDayOfCurrentYear() {
+  return DateTime(DateTime.now().year, 12 + 1, 1);
+}
+
+DateTime lastDayOfCurrentYearAndMore(int addYear) {
+  return DateTime(DateTime.now().year + addYear, 12 + 1, 1);
+}
+
+int getNumMonthsLeft(DateTime input) {
+  return 12 - input.month;
+}
+
+int getNumOfDaysInNextMonth(DateTime input) {
+  return DateTime(input.year, input.month + 2, 0).day;
+}

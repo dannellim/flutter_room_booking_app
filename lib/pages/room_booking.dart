@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/rm_booking.dart';
@@ -137,6 +136,11 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   }
 
   List<DbRmBooking> _bookings = List.empty();
+  bool _isNotRecurring = true;
+  bool _isRecurringDaily = false;
+  bool _isRecurringWeekly = false;
+  bool _isRecurringMonthly = false;
+  bool _isRecurringYearly = false;
 
   @override
   Widget build(BuildContext context) {
@@ -409,6 +413,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                     })
                                               ],
                                             ),
+
                                             Container(
                                               margin: const EdgeInsets.only(
                                                   top: 16,
@@ -444,6 +449,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                 }).toList(),
                                               ),
                                             ),
+
                                             Container(
                                               margin: const EdgeInsets.only(
                                                   top: 8,
@@ -480,6 +486,178 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                 }).toList(),
                                               ),
                                             ),
+
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 16,
+                                                  left: 0,
+                                                  right: 0,
+                                                  bottom: 16),
+                                              child: const Text(
+                                                  "Is this booking recurring?",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.left),
+                                            ),
+
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: CheckboxListTile(
+                                                        title: const Text('No'),
+                                                        value: _isNotRecurring,
+                                                        controlAffinity:
+                                                            ListTileControlAffinity
+                                                                .leading,
+                                                        onChanged:
+                                                            (bool? value) {
+                                                          setState(() {
+                                                            _isNotRecurring =
+                                                                value!;
+                                                            _isRecurringDaily =
+                                                                false;
+                                                            _isRecurringWeekly =
+                                                                false;
+                                                            _isRecurringMonthly =
+                                                                false;
+                                                            _isRecurringYearly =
+                                                                false;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: AbsorbPointer(
+                                                          absorbing:
+                                                              _rangeSelectionMode ==
+                                                                  RangeSelectionMode
+                                                                      .toggledOn,
+                                                          child:
+                                                              CheckboxListTile(
+                                                            title: const Text(
+                                                                'Daily'),
+                                                            value:
+                                                                _isRecurringDaily,
+                                                            controlAffinity:
+                                                                ListTileControlAffinity
+                                                                    .leading,
+                                                            onChanged:
+                                                                (bool? value) {
+                                                              setState(() {
+                                                                _isNotRecurring =
+                                                                    false;
+                                                                _isRecurringDaily =
+                                                                    value!;
+                                                                _isRecurringWeekly =
+                                                                    false;
+                                                                _isRecurringMonthly =
+                                                                    false;
+                                                                _isRecurringYearly =
+                                                                    false;
+                                                              });
+                                                            },
+                                                          )),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: CheckboxListTile(
+                                                        title: const Text(
+                                                            'Weekly'),
+                                                        controlAffinity:
+                                                            ListTileControlAffinity
+                                                                .leading,
+                                                        value:
+                                                            _isRecurringWeekly,
+                                                        onChanged:
+                                                            (bool? value) {
+                                                          setState(() {
+                                                            _isNotRecurring =
+                                                                false;
+                                                            _isRecurringDaily =
+                                                                false;
+                                                            _isRecurringWeekly =
+                                                                value!;
+                                                            _isRecurringMonthly =
+                                                                false;
+                                                            _isRecurringYearly =
+                                                                false;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: CheckboxListTile(
+                                                        title: const Text(
+                                                            'Monthly'),
+                                                        controlAffinity:
+                                                            ListTileControlAffinity
+                                                                .leading,
+                                                        value:
+                                                            _isRecurringMonthly,
+                                                        onChanged:
+                                                            (bool? value) {
+                                                          setState(() {
+                                                            _isNotRecurring =
+                                                                false;
+                                                            _isRecurringDaily =
+                                                                false;
+                                                            _isRecurringWeekly =
+                                                                false;
+                                                            _isRecurringMonthly =
+                                                                value!;
+                                                            _isRecurringYearly =
+                                                                false;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: CheckboxListTile(
+                                                        title: const Text(
+                                                            'Yearly'),
+                                                        value:
+                                                            _isRecurringYearly,
+                                                        controlAffinity:
+                                                            ListTileControlAffinity
+                                                                .leading,
+                                                        onChanged:
+                                                            (bool? value) {
+                                                          setState(() {
+                                                            _isNotRecurring =
+                                                                false;
+                                                            _isRecurringDaily =
+                                                                false;
+                                                            _isRecurringWeekly =
+                                                                false;
+                                                            _isRecurringMonthly =
+                                                                false;
+                                                            _isRecurringYearly =
+                                                                value!;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ]),
+
                                             Center(
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
@@ -501,7 +679,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                             0.05),
                                                   ),
                                                   onPressed: () async {
-                                                    await saveRoomBooking();
+                                                    await _saveRoomBooking();
                                                     // ignore: use_build_context_synchronously
                                                     Navigator.pop(context);
                                                   },
@@ -564,7 +742,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].code.v}\n"),
                                               const TextSpan(
-                                                  text: 'Start Date: ',
+                                                  text: '\nStart Date: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -572,7 +750,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].startDate.v}\n"),
                                               const TextSpan(
-                                                  text: 'Start Time: ',
+                                                  text: '\nStart Time: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -580,7 +758,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].startTime.v}\n"),
                                               const TextSpan(
-                                                  text: 'End Date: ',
+                                                  text: '\nEnd Date: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -588,7 +766,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].endDate.v}\n"),
                                               const TextSpan(
-                                                  text: 'End Time: ',
+                                                  text: '\nEnd Time: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -596,7 +774,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].endTime.v}\n"),
                                               const TextSpan(
-                                                  text: 'Room: ',
+                                                  text: '\nRoom: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -604,7 +782,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].room.v}\n"),
                                               const TextSpan(
-                                                  text: 'Reason: ',
+                                                  text: '\nReason: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -612,7 +790,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   text:
                                                       "${value[index].reason.v}\n"),
                                               const TextSpan(
-                                                  text: 'Booked By: ',
+                                                  text: '\nBooked By: ',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -621,7 +799,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                       "${value[index].bookedBy.v}\n"),
                                               const TextSpan(
                                                   text:
-                                                      'Date & Time of Booking: ',
+                                                      '\nDate & Time of Booking:\n\n',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -678,42 +856,208 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             }));
   }
 
-  saveRoomBooking() async {
-    if (kDebugMode) {
-      print("_selectedDay $_selectedDay");
-      print("_rangeStart $_rangeStart");
-      print("_rangeEnd $_rangeEnd");
-      print("_timeStart $_timeStart");
-      print("_timeEnd $_timeEnd");
-      print("roomDropdownValue $roomDropdownValue");
-      print("reasonDropdownValue $reasonDropdownValue");
-      print("_rangeSelectionMode $_rangeSelectionMode");
-    }
-    if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
-      var days = daysInRange(_rangeStart!, _rangeEnd!);
-      var numDays = days.length;
-      print("numberOfDays $numDays");
-      for (var day in days) {
+  _saveRoomBooking([bool mounted = true]) async {
+    // if (kDebugMode) {
+    //   print("_selectedDay $_selectedDay");
+    //   print("_rangeStart $_rangeStart");
+    //   print("_rangeEnd $_rangeEnd");
+    //   print("_timeStart $_timeStart");
+    //   print("_timeEnd $_timeEnd");
+    //   print("roomDropdownValue $roomDropdownValue");
+    //   print("reasonDropdownValue $reasonDropdownValue");
+    //   print("_rangeSelectionMode $_rangeSelectionMode");
+    // }
+    showDialog(
+        // The user CANNOT close this dialog  by pressing outsite it
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  // Some text
+                  Text('Loading...')
+                ],
+              ),
+            ),
+          );
+        });
+    if (_isNotRecurring) {
+      if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+        var days = daysInRange(_rangeStart!, _rangeEnd!);
+        for (var day in days) {
+          await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+            ..id = DateTime.now().millisecondsSinceEpoch
+            ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+            ..startTime.v = _timeStart.format(context)
+            ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+            ..endTime.v = _timeEnd.format(context)
+            ..room.v = roomDropdownValue
+            ..reason.v = reasonDropdownValue
+            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+        }
+      } else {
         await dbRmBookingProvider.saveRmBooking(DbRmBooking()
           ..id = DateTime.now().millisecondsSinceEpoch
-          ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+          ..startDate.v = DateFormat("yyyy-MM-dd").format(_rangeStart!)
           ..startTime.v = _timeStart.format(context)
-          ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+          ..endDate.v = DateFormat("yyyy-MM-dd").format(_rangeEnd!)
           ..endTime.v = _timeEnd.format(context)
           ..room.v = roomDropdownValue
           ..reason.v = reasonDropdownValue
           ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
       }
-    } else {
-      await dbRmBookingProvider.saveRmBooking(DbRmBooking()
-        ..id = DateTime.now().millisecondsSinceEpoch
-        ..startDate.v = DateFormat("yyyy-MM-dd").format(_rangeStart!)
-        ..startTime.v = _timeStart.format(context)
-        ..endDate.v = DateFormat("yyyy-MM-dd").format(_rangeEnd!)
-        ..endTime.v = _timeEnd.format(context)
-        ..room.v = roomDropdownValue
-        ..reason.v = reasonDropdownValue
-        ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+    } else if (_isRecurringDaily) {
+      if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+        Utils.showAlertDialog(context, "OK", "Daily recurring uavailable",
+            "Daily recurring booking is unavailable for date ranges.");
+      } else {
+        var days = daysInRange(_rangeStart!, lastDayOfCurrentYear());
+        for (var day in days) {
+          await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+            ..id = DateTime.now().millisecondsSinceEpoch
+            ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+            ..startTime.v = _timeStart.format(context)
+            ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+            ..endTime.v = _timeEnd.format(context)
+            ..room.v = roomDropdownValue
+            ..reason.v = reasonDropdownValue
+            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+        }
+      }
+    } else if (_isRecurringWeekly) {
+      if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+        // Utils.showAlertDialog(context, "OK", "Weekly recurring uavailable",
+        //     "Daily recurring booking is unavailable for date ranges.");
+        var days = daysInRange(_rangeStart!, _rangeEnd!);
+        var daysTillYrEnd = daysInRange(_rangeStart!, lastDayOfCurrentYear());
+        for (var dayBook in days) {
+          var dayToBook = dayBook;
+          for (var day in daysTillYrEnd) {
+            if (isSameDay(day, dayToBook)) {
+              dayToBook = dayToBook.add(const Duration(days: 7));
+              await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+                ..id = DateTime.now().millisecondsSinceEpoch
+                ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..startTime.v = _timeStart.format(context)
+                ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..endTime.v = _timeEnd.format(context)
+                ..room.v = roomDropdownValue
+                ..reason.v = reasonDropdownValue
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+            }
+          }
+        }
+      } else {
+        var days = daysInRange(_rangeStart!, lastDayOfCurrentYear());
+        var dayToBook = _rangeStart!;
+        for (var day in days) {
+          if (isSameDay(day, dayToBook)) {
+            dayToBook = dayToBook.add(const Duration(days: 7));
+            await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+              ..id = DateTime.now().millisecondsSinceEpoch
+              ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..startTime.v = _timeStart.format(context)
+              ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..endTime.v = _timeEnd.format(context)
+              ..room.v = roomDropdownValue
+              ..reason.v = reasonDropdownValue
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+          }
+        }
+      }
+    } else if (_isRecurringMonthly) {
+      if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+        // Utils.showAlertDialog(context, "OK", "Weekly recurring uavailable",
+        //     "Daily recurring booking is unavailable for date ranges.");
+        var days = daysInRange(_rangeStart!, _rangeEnd!);
+        var daysTillYrEnd = daysInRange(_rangeStart!, lastDayOfCurrentYear());
+        for (var dayBook in days) {
+          for (var day in daysTillYrEnd) {
+            if (day.day == dayBook.day) {
+              await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+                ..id = DateTime.now().millisecondsSinceEpoch
+                ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..startTime.v = _timeStart.format(context)
+                ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..endTime.v = _timeEnd.format(context)
+                ..room.v = roomDropdownValue
+                ..reason.v = reasonDropdownValue
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+            }
+          }
+        }
+      } else {
+        var days = daysInRange(_rangeStart!, lastDayOfCurrentYear());
+        var dayToBook = _rangeStart!;
+        for (var day in days) {
+          if (day.day == dayToBook.day) {
+            await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+              ..id = DateTime.now().millisecondsSinceEpoch
+              ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..startTime.v = _timeStart.format(context)
+              ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..endTime.v = _timeEnd.format(context)
+              ..room.v = roomDropdownValue
+              ..reason.v = reasonDropdownValue
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+          }
+        }
+      }
+    } else if (_isRecurringYearly) {
+      if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
+        // Utils.showAlertDialog(context, "OK", "Weekly recurring uavailable",
+        //     "Daily recurring booking is unavailable for date ranges.");
+        var days = daysInRange(_rangeStart!, _rangeEnd!);
+        var daysTillYrEnd =
+            daysInRange(_rangeStart!, lastDayOfCurrentYearAndMore(2));
+        for (var dayBook in days) {
+          var dayToBook = dayBook;
+          for (var day in daysTillYrEnd) {
+            if (isSameDay(day, dayToBook)) {
+              dayToBook =
+                  DateTime(dayToBook.year + 1, dayToBook.month, dayToBook.day);
+              await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+                ..id = DateTime.now().millisecondsSinceEpoch
+                ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..startTime.v = _timeStart.format(context)
+                ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+                ..endTime.v = _timeEnd.format(context)
+                ..room.v = roomDropdownValue
+                ..reason.v = reasonDropdownValue
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+            }
+          }
+        }
+      } else {
+        var days = daysInRange(_rangeStart!, lastDayOfCurrentYearAndMore(2));
+        var dayToBook = _rangeStart!;
+        for (var day in days) {
+          if (isSameDay(day, dayToBook)) {
+            dayToBook =
+                DateTime(dayToBook.year + 1, dayToBook.month, dayToBook.day);
+            await dbRmBookingProvider.saveRmBooking(DbRmBooking()
+              ..id = DateTime.now().millisecondsSinceEpoch
+              ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..startTime.v = _timeStart.format(context)
+              ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
+              ..endTime.v = _timeEnd.format(context)
+              ..room.v = roomDropdownValue
+              ..reason.v = reasonDropdownValue
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+          }
+        }
+      }
     }
     if (_selectedDay == null) {
       _selectedEvents.value =
@@ -721,10 +1065,12 @@ class RoomBookingPageState extends State<RoomBookingPage> {
     } else {
       _selectedEvents.value = await _getEventsForDay(_selectedDay!);
     }
-    clearEverything();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    _clearEverything();
   }
 
-  clearEverything() {
+  _clearEverything() {
     setState(() {
       _selectedDay = _selectedDay ?? _rangeStart;
       _rangeStart = null;

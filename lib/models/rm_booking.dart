@@ -13,7 +13,6 @@ class DbRmBooking extends DbRecord {
   final reason = CvField<String>('reason');
   final bookedBy = CvField<String>('bookedBy');
   final bookedDate = CvField<int>('bookedDate');
-  final isRecurring = CvField<bool>('isRecurring');
 
   @override
   List<CvField> get fields => [
@@ -26,7 +25,6 @@ class DbRmBooking extends DbRecord {
         reason,
         bookedBy,
         bookedDate,
-        isRecurring
       ];
 
   Map toJson() => {
@@ -40,7 +38,6 @@ class DbRmBooking extends DbRecord {
         'reason': reason,
         'bookedBy': bookedBy,
         'bookedDate': bookedDate,
-        'isRecurring': isRecurring,
       };
 
   @override
