@@ -169,704 +169,842 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                       .toList();
                 }
               }
-              return Column(
-                children: [
-                  TableCalendar<DbRmBooking>(
-                    eventLoader: _getEventMarkersForDay,
-                    firstDay: _firstDay,
-                    lastDay: _lastDay,
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    rangeStartDay: _rangeStart,
-                    rangeEndDay: _rangeEnd,
-                    availableCalendarFormats: const {
-                      CalendarFormat.month: 'Month'
-                    },
-                    rangeSelectionMode: _rangeSelectionMode,
-                    onDaySelected: _onDaySelected,
-                    onRangeSelected: _onRangeSelected,
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 3,
-                      minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
-                          MediaQuery.of(context).size.height * 0.05),
-                    ),
-                    onPressed: () {
-                      if (_rangeSelectionMode == RangeSelectionMode.toggledOn &&
-                          _rangeEnd == null) {
-                        Utils.showAlertDialog(
-                            context,
-                            "OK",
-                            "End date not selected!",
-                            "Please click an end date for your range selection");
-                        return;
-                      }
-                      _timeStart = const TimeOfDay(hour: 08, minute: 0);
-                      _timeEnd = const TimeOfDay(hour: 22, minute: 0);
-                      _rangeStart = _rangeStart ?? _selectedDay;
-                      _rangeEnd = _rangeEnd ?? _selectedDay;
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (context, setState) {
-                                return AlertDialog(
-                                    scrollable: true,
-                                    content: Stack(
-                                      alignment: Alignment.center,
-                                      children: <Widget>[
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Text("Start Date: ",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                                Text(
-                                                    DateFormat("dd MMMM yyyy")
-                                                        .format(_rangeStart!),
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                    textAlign: TextAlign.left),
-                                                IconButton(
-                                                    icon:
-                                                        const Icon(Icons.edit),
-                                                    iconSize: 16,
-                                                    onPressed: () async {
-                                                      // your code
-                                                      final DateTime? picked =
-                                                          await showDatePicker(
-                                                              context: context,
-                                                              initialDate:
-                                                                  _rangeStart!,
-                                                              firstDate:
-                                                                  _firstDay,
-                                                              lastDate:
-                                                                  _lastDay);
-                                                      if (picked != null &&
-                                                          picked !=
-                                                              (_selectedDay !=
-                                                                      null
-                                                                  ? _selectedDay!
-                                                                  : _rangeStart!)) {
-                                                        setState(() {
-                                                          _rangeStart = picked;
-                                                          // _selectedDay != null
-                                                          //     ? _selectedDay =
-                                                          //         picked
-                                                          //     : _rangeStart =
-                                                          //         picked;
-                                                        });
-                                                      }
-                                                    })
-                                              ],
-                                            ),
-                                            //const SizedBox(height: 8.0),
-                                            Row(
-                                              children: [
-                                                const Text("Start Time: ",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                                Text(_timeStart.format(context),
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                    textAlign: TextAlign.left),
-                                                IconButton(
-                                                    icon:
-                                                        const Icon(Icons.edit),
-                                                    iconSize: 16,
-                                                    onPressed: () async {
-                                                      // your code
-                                                      TimeOfDay?
-                                                          selectedTime24Hour =
-                                                          await showTimePicker(
-                                                        context: context,
-                                                        initialTime: _timeStart,
-                                                        builder: (BuildContext
-                                                                context,
-                                                            Widget? child) {
-                                                          return MediaQuery(
-                                                            data: MediaQuery.of(
-                                                                    context)
-                                                                .copyWith(
-                                                                    alwaysUse24HourFormat:
-                                                                        true),
-                                                            child: child!,
-                                                          );
-                                                        },
-                                                      );
-
-                                                      if (selectedTime24Hour !=
-                                                              null &&
-                                                          selectedTime24Hour !=
-                                                              _timeStart) {
-                                                        setState(() {
-                                                          _timeStart =
-                                                              selectedTime24Hour;
-                                                        });
-                                                      }
-                                                    })
-                                              ],
-                                            ),
-
-                                            Row(
-                                              children: [
-                                                const Text("End Date: ",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                                Text(
-                                                    DateFormat("dd MMMM yyyy")
-                                                        .format(_rangeEnd!),
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                    textAlign: TextAlign.left),
-                                                IconButton(
-                                                    icon:
-                                                        const Icon(Icons.edit),
-                                                    iconSize: 16,
-                                                    onPressed: () async {
-                                                      // your code
-                                                      final DateTime? picked =
-                                                          await showDatePicker(
-                                                              context: context,
-                                                              initialDate:
-                                                                  _rangeEnd!,
-                                                              firstDate:
-                                                                  _firstDay,
-                                                              lastDate:
-                                                                  _lastDay);
-                                                      if (picked != null &&
-                                                          picked !=
-                                                              (_selectedDay !=
-                                                                      null
-                                                                  ? _selectedDay!
-                                                                  : _rangeEnd!)) {
-                                                        setState(() {
-                                                          _rangeEnd = picked;
-                                                        });
-                                                      }
-                                                    })
-                                              ],
-                                            ),
-
-                                            Row(
-                                              children: [
-                                                const Text("End Time: ",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                                Text(_timeEnd.format(context),
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                    textAlign: TextAlign.left),
-                                                IconButton(
-                                                    icon:
-                                                        const Icon(Icons.edit),
-                                                    iconSize: 16,
-                                                    onPressed: () async {
-                                                      // your code
-                                                      TimeOfDay?
-                                                          selectedTime24Hour =
-                                                          await showTimePicker(
-                                                        context: context,
-                                                        initialTime: _timeEnd,
-                                                        builder: (BuildContext
-                                                                context,
-                                                            Widget? child) {
-                                                          return MediaQuery(
-                                                            data: MediaQuery.of(
-                                                                    context)
-                                                                .copyWith(
-                                                                    alwaysUse24HourFormat:
-                                                                        true),
-                                                            child: child!,
-                                                          );
-                                                        },
-                                                      );
-
-                                                      if (selectedTime24Hour !=
-                                                              null &&
-                                                          selectedTime24Hour !=
-                                                              _timeEnd) {
-                                                        setState(() {
-                                                          _timeEnd =
-                                                              selectedTime24Hour;
-                                                        });
-                                                      }
-                                                    })
-                                              ],
-                                            ),
-
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 16,
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 16),
-                                              child: DropdownButtonFormField<
-                                                  String>(
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Room',
-                                                ),
-                                                isExpanded: true,
-                                                value: roomDropdownValue,
-                                                icon: const Icon(
-                                                    Icons.arrow_drop_down),
-                                                onChanged: (String? value) {
-                                                  // This is called when the user selects an item.
-                                                  setState(() {
-                                                    roomDropdownValue = value!;
-                                                  });
-                                                },
-                                                items: roomList.map<
-                                                        DropdownMenuItem<
-                                                            String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 8,
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 0),
-                                              child: DropdownButtonFormField<
-                                                  String>(
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Reason',
-                                                ),
-                                                isExpanded: true,
-                                                value: reasonDropdownValue,
-                                                icon: const Icon(
-                                                    Icons.arrow_drop_down),
-                                                onChanged: (String? value) {
-                                                  // This is called when the user selects an item.
-                                                  setState(() {
-                                                    reasonDropdownValue =
-                                                        value!;
-                                                  });
-                                                },
-                                                items: reasonList.map<
-                                                        DropdownMenuItem<
-                                                            String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 16,
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 16),
-                                              child: const Text(
-                                                  "Is this booking recurring?",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                  textAlign: TextAlign.left),
-                                            ),
-
-                                            Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: CheckboxListTile(
-                                                        title: const Text('No'),
-                                                        value: _isNotRecurring,
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                value!;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: AbsorbPointer(
-                                                          absorbing:
-                                                              _rangeSelectionMode ==
-                                                                  RangeSelectionMode
-                                                                      .toggledOn,
-                                                          child:
-                                                              CheckboxListTile(
-                                                            title: const Text(
-                                                                'Daily'),
-                                                            value:
-                                                                _isRecurringDaily,
-                                                            controlAffinity:
-                                                                ListTileControlAffinity
-                                                                    .leading,
-                                                            onChanged:
-                                                                (bool? value) {
-                                                              setState(() {
-                                                                _isNotRecurring =
-                                                                    false;
-                                                                _isRecurringDaily =
-                                                                    value!;
-                                                                _isRecurringWeekly =
-                                                                    false;
-                                                                _isRecurringMonthly =
-                                                                    false;
-                                                                _isRecurringYearly =
-                                                                    false;
-                                                              });
-                                                            },
-                                                          )),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: CheckboxListTile(
-                                                        title: const Text(
-                                                            'Weekly'),
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        value:
-                                                            _isRecurringWeekly,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                value!;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: CheckboxListTile(
-                                                        title: const Text(
-                                                            'Monthly'),
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        value:
-                                                            _isRecurringMonthly,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                value!;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: CheckboxListTile(
-                                                        title: const Text(
-                                                            'Yearly'),
-                                                        value:
-                                                            _isRecurringYearly,
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                value!;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ]),
-
-                                            Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 16,
-                                                    left: 0,
-                                                    right: 0,
-                                                    bottom: 0),
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    elevation: 3,
-                                                    minimumSize: Size(
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.05),
-                                                  ),
-                                                  onPressed: () async {
-                                                    await _saveRoomBooking();
-                                                    // ignore: use_build_context_synchronously
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Padding(
-                                                    padding: EdgeInsets.all(16),
-                                                    child: Text('Book Room',
-                                                        style: TextStyle(
-                                                            fontSize: 16)),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ));
-                              },
-                            );
-                          });
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(16),
-                      child:
-                          Text('New Booking', style: TextStyle(fontSize: 16)),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Expanded(
-                    child: ValueListenableBuilder<List<DbRmBooking>>(
-                      valueListenable: _selectedEvents,
-                      builder: (context, value, _) {
-                        return ListView.builder(
-                          itemCount: value.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: ListTile(
-                                onTap: () => {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        Text bookingText = Text.rich(
-                                          TextSpan(
-                                            // with no TextStyle it will have default text style
-                                            text: '',
-                                            children: <TextSpan>[
-                                              const TextSpan(
-                                                  text: 'Code: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].code.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nStart Date: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].startDate.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nStart Time: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].startTime.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nEnd Date: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].endDate.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nEnd Time: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].endTime.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nRoom: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].room.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nReason: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].reason.v}\n"),
-                                              const TextSpan(
-                                                  text: '\nBooked By: ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text:
-                                                      "${value[index].bookedBy.v}\n"),
-                                              const TextSpan(
-                                                  text:
-                                                      '\nDate & Time of Booking:\n\n',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              TextSpan(
-                                                  text: DateFormat(
-                                                          "dd MMM yyyy hh:mm a")
-                                                      .format(DateTime
-                                                          .fromMillisecondsSinceEpoch(
-                                                              value[index]
-                                                                  .bookedDate
-                                                                  .valueOrThrow))),
-                                            ],
-                                          ),
-                                        );
-
-                                        // String bookingDetails =
-                                        //     "Code: ${value[index].code}\nStart Date: ${value[index].startDate}\nStart Time: ${value[index].startTime}\nEnd Date: ${value[index].endDate}\nEnd Time: ${value[index].endTime}\nRoom: ${value[index].room}\nReason: ${value[index].reason}\nBooked By: ${value[index].bookedBy}\nBooked Time: ${value[index].bookedTime}\n";
-                                        return AlertDialog(
-                                          title: const Text("Booking Details"),
-                                          titleTextStyle: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                          content: bookingText,
-                                          actions: [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 3,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(8),
-                                                child: Text('OK',
-                                                    style: TextStyle(
-                                                        fontSize: 16)),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      })
-                                },
-                                title: Text(value[index].toSummary()),
-                              ),
-                            );
+              return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      children: [
+                        TableCalendar<DbRmBooking>(
+                          eventLoader: _getEventMarkersForDay,
+                          firstDay: _firstDay,
+                          lastDay: _lastDay,
+                          focusedDay: _focusedDay,
+                          selectedDayPredicate: (day) =>
+                              isSameDay(_selectedDay, day),
+                          rangeStartDay: _rangeStart,
+                          rangeEndDay: _rangeEnd,
+                          availableCalendarFormats: const {
+                            CalendarFormat.month: 'Month'
                           },
-                        );
-                      },
+                          rangeSelectionMode: _rangeSelectionMode,
+                          onDaySelected: _onDaySelected,
+                          onRangeSelected: _onRangeSelected,
+                          onPageChanged: (focusedDay) {
+                            _focusedDay = focusedDay;
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 3,
+                              minimumSize: Size(
+                                  MediaQuery.of(context).size.width,
+                                  MediaQuery.of(context).size.height * 0.05),
+                            ),
+                            onPressed: () {
+                              if (_rangeSelectionMode ==
+                                      RangeSelectionMode.toggledOn &&
+                                  _rangeEnd == null) {
+                                Utils.showAlertDialog(
+                                    context,
+                                    "OK",
+                                    "End date not selected!",
+                                    "Please click an end date for your range selection");
+                                return;
+                              }
+                              _timeStart = const TimeOfDay(hour: 08, minute: 0);
+                              _timeEnd = const TimeOfDay(hour: 22, minute: 0);
+                              _rangeStart = _rangeStart ?? _selectedDay;
+                              _rangeEnd = _rangeEnd ?? _selectedDay;
+                              _isNotRecurring = true;
+                              _isRecurringDaily = false;
+                              _isRecurringWeekly = false;
+                              _isRecurringMonthly = false!;
+                              _isRecurringYearly = false;
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return AlertDialog(
+                                            insetPadding:
+                                                const EdgeInsets.all(16),
+                                            contentPadding:
+                                                const EdgeInsets.all(16),
+                                            scrollable: true,
+                                            content: Stack(
+                                              alignment: Alignment.center,
+                                              children: <Widget>[
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Flex(
+                                                        direction: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width >=
+                                                                768
+                                                            ? Axis.horizontal
+                                                            : Axis.vertical,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        children: <Widget>[
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "Start Date: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  DateFormat(
+                                                                          "dd MMMM yyyy")
+                                                                      .format(
+                                                                          _rangeStart!),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    final DateTime? picked = await showDatePicker(
+                                                                        context:
+                                                                            context,
+                                                                        initialDate:
+                                                                            _rangeStart!,
+                                                                        firstDate:
+                                                                            _firstDay,
+                                                                        lastDate:
+                                                                            _lastDay);
+                                                                    if (picked !=
+                                                                            null &&
+                                                                        picked !=
+                                                                            (_selectedDay != null
+                                                                                ? _selectedDay!
+                                                                                : _rangeStart!)) {
+                                                                      setState(
+                                                                          () {
+                                                                        _rangeStart =
+                                                                            picked;
+                                                                        // _selectedDay != null
+                                                                        //     ? _selectedDay =
+                                                                        //         picked
+                                                                        //     : _rangeStart =
+                                                                        //         picked;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "Start Time: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  _timeStart
+                                                                      .format(
+                                                                          context),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    TimeOfDay?
+                                                                        selectedTime24Hour =
+                                                                        await showTimePicker(
+                                                                      context:
+                                                                          context,
+                                                                      initialTime:
+                                                                          _timeStart,
+                                                                      builder: (BuildContext
+                                                                              context,
+                                                                          Widget?
+                                                                              child) {
+                                                                        return MediaQuery(
+                                                                          data:
+                                                                              MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                                          child:
+                                                                              child!,
+                                                                        );
+                                                                      },
+                                                                    );
+
+                                                                    if (selectedTime24Hour !=
+                                                                            null &&
+                                                                        selectedTime24Hour !=
+                                                                            _timeStart) {
+                                                                      setState(
+                                                                          () {
+                                                                        _timeStart =
+                                                                            selectedTime24Hour;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "End Date: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  DateFormat(
+                                                                          "dd MMMM yyyy")
+                                                                      .format(
+                                                                          _rangeEnd!),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    final DateTime? picked = await showDatePicker(
+                                                                        context:
+                                                                            context,
+                                                                        initialDate:
+                                                                            _rangeEnd!,
+                                                                        firstDate:
+                                                                            _firstDay,
+                                                                        lastDate:
+                                                                            _lastDay);
+                                                                    if (picked !=
+                                                                            null &&
+                                                                        picked !=
+                                                                            (_selectedDay != null
+                                                                                ? _selectedDay!
+                                                                                : _rangeEnd!)) {
+                                                                      setState(
+                                                                          () {
+                                                                        _rangeEnd =
+                                                                            picked;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "End Time: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  _timeEnd.format(
+                                                                      context),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    TimeOfDay?
+                                                                        selectedTime24Hour =
+                                                                        await showTimePicker(
+                                                                      context:
+                                                                          context,
+                                                                      initialTime:
+                                                                          _timeEnd,
+                                                                      builder: (BuildContext
+                                                                              context,
+                                                                          Widget?
+                                                                              child) {
+                                                                        return MediaQuery(
+                                                                          data:
+                                                                              MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                                          child:
+                                                                              child!,
+                                                                        );
+                                                                      },
+                                                                    );
+
+                                                                    if (selectedTime24Hour !=
+                                                                            null &&
+                                                                        selectedTime24Hour !=
+                                                                            _timeEnd) {
+                                                                      setState(
+                                                                          () {
+                                                                        _timeEnd =
+                                                                            selectedTime24Hour;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                        ]),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 16,
+                                                              left: 0,
+                                                              right: 0,
+                                                              bottom: 16),
+                                                      child:
+                                                          DropdownButtonFormField<
+                                                              String>(
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(),
+                                                          labelText: 'Room',
+                                                        ),
+                                                        isExpanded: true,
+                                                        value:
+                                                            roomDropdownValue,
+                                                        icon: const Icon(Icons
+                                                            .arrow_drop_down),
+                                                        onChanged:
+                                                            (String? value) {
+                                                          // This is called when the user selects an item.
+                                                          setState(() {
+                                                            roomDropdownValue =
+                                                                value!;
+                                                          });
+                                                        },
+                                                        items: roomList.map<
+                                                            DropdownMenuItem<
+                                                                String>>((String
+                                                            value) {
+                                                          return DropdownMenuItem<
+                                                              String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 8,
+                                                              left: 0,
+                                                              right: 0,
+                                                              bottom: 0),
+                                                      child:
+                                                          DropdownButtonFormField<
+                                                              String>(
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(),
+                                                          labelText: 'Reason',
+                                                        ),
+                                                        isExpanded: true,
+                                                        value:
+                                                            reasonDropdownValue,
+                                                        icon: const Icon(Icons
+                                                            .arrow_drop_down),
+                                                        onChanged:
+                                                            (String? value) {
+                                                          // This is called when the user selects an item.
+                                                          setState(() {
+                                                            reasonDropdownValue =
+                                                                value!;
+                                                          });
+                                                        },
+                                                        items: reasonList.map<
+                                                            DropdownMenuItem<
+                                                                String>>((String
+                                                            value) {
+                                                          return DropdownMenuItem<
+                                                              String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 16,
+                                                              left: 0,
+                                                              right: 0,
+                                                              bottom: 0),
+                                                      child: const Text(
+                                                          "Is this booking recurring?",
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          textAlign:
+                                                              TextAlign.left),
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 16,
+                                                              left: 0,
+                                                              right: 0,
+                                                              bottom: 16),
+                                                      child: Flex(
+                                                          direction: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width >=
+                                                                  768
+                                                              ? Axis.horizontal
+                                                              : Axis.vertical,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: <Widget>[
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: SizedBox(
+                                                                width: 110,
+                                                                child:
+                                                                    CheckboxListTile(
+                                                                  contentPadding:
+                                                                      EdgeInsets
+                                                                          .zero,
+                                                                  title:
+                                                                      const Text(
+                                                                          'No'),
+                                                                  value:
+                                                                      _isNotRecurring,
+                                                                  controlAffinity:
+                                                                      ListTileControlAffinity
+                                                                          .leading,
+                                                                  onChanged:
+                                                                      (bool?
+                                                                          value) {
+                                                                    setState(
+                                                                        () {
+                                                                      _isNotRecurring =
+                                                                          value!;
+                                                                      _isRecurringDaily =
+                                                                          false;
+                                                                      _isRecurringWeekly =
+                                                                          false;
+                                                                      _isRecurringMonthly =
+                                                                          false;
+                                                                      _isRecurringYearly =
+                                                                          false;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: SizedBox(
+                                                                width: 110,
+                                                                child:
+                                                                    AbsorbPointer(
+                                                                  absorbing: _rangeSelectionMode ==
+                                                                      RangeSelectionMode
+                                                                          .toggledOn,
+                                                                  child:
+                                                                      CheckboxListTile(
+                                                                    contentPadding:
+                                                                        EdgeInsets
+                                                                            .zero,
+                                                                    title: const Text(
+                                                                        'Daily'),
+                                                                    value:
+                                                                        _isRecurringDaily,
+                                                                    controlAffinity:
+                                                                        ListTileControlAffinity
+                                                                            .leading,
+                                                                    onChanged:
+                                                                        (bool?
+                                                                            value) {
+                                                                      setState(
+                                                                          () {
+                                                                        _isNotRecurring =
+                                                                            false;
+                                                                        _isRecurringDaily =
+                                                                            value!;
+                                                                        _isRecurringWeekly =
+                                                                            false;
+                                                                        _isRecurringMonthly =
+                                                                            false;
+                                                                        _isRecurringYearly =
+                                                                            false;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: SizedBox(
+                                                                width: 110,
+                                                                child:
+                                                                    CheckboxListTile(
+                                                                  contentPadding:
+                                                                      EdgeInsets
+                                                                          .zero,
+                                                                  title: const Text(
+                                                                      'Weekly'),
+                                                                  controlAffinity:
+                                                                      ListTileControlAffinity
+                                                                          .leading,
+                                                                  value:
+                                                                      _isRecurringWeekly,
+                                                                  onChanged:
+                                                                      (bool?
+                                                                          value) {
+                                                                    setState(
+                                                                        () {
+                                                                      _isNotRecurring =
+                                                                          false;
+                                                                      _isRecurringDaily =
+                                                                          false;
+                                                                      _isRecurringWeekly =
+                                                                          value!;
+                                                                      _isRecurringMonthly =
+                                                                          false;
+                                                                      _isRecurringYearly =
+                                                                          false;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: SizedBox(
+                                                                width: 110,
+                                                                child:
+                                                                    CheckboxListTile(
+                                                                  contentPadding:
+                                                                      EdgeInsets
+                                                                          .zero,
+                                                                  title: const Text(
+                                                                      'Monthly'),
+                                                                  controlAffinity:
+                                                                      ListTileControlAffinity
+                                                                          .leading,
+                                                                  value:
+                                                                      _isRecurringMonthly,
+                                                                  onChanged:
+                                                                      (bool?
+                                                                          value) {
+                                                                    setState(
+                                                                        () {
+                                                                      _isNotRecurring =
+                                                                          false;
+                                                                      _isRecurringDaily =
+                                                                          false;
+                                                                      _isRecurringWeekly =
+                                                                          false;
+                                                                      _isRecurringMonthly =
+                                                                          value!;
+                                                                      _isRecurringYearly =
+                                                                          false;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ]),
+                                                    ),
+                                                    Center(
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        child: ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            elevation: 3,
+                                                            minimumSize: Size(
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                                MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    0.05),
+                                                          ),
+                                                          onPressed: () async {
+                                                            if (_isNotRecurring == false &&
+                                                                _isRecurringDaily ==
+                                                                    false &&
+                                                                _isRecurringWeekly ==
+                                                                    false &&
+                                                                _isRecurringMonthly ==
+                                                                    false &&
+                                                                _isRecurringYearly ==
+                                                                    false) {
+                                                              Utils.showAlertDialog(
+                                                                  context,
+                                                                  "OK",
+                                                                  "No booking type selected",
+                                                                  "Please select at least one booking recurring type.");
+                                                              return;
+                                                            }
+                                                            await _saveRoomBooking();
+                                                            // ignore: use_build_context_synchronously
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    16),
+                                                            child: Text(
+                                                                'Book Room',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        16)),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ));
+                                      },
+                                    );
+                                  });
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Text('New Booking',
+                                  style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ValueListenableBuilder<List<DbRmBooking>>(
+                            valueListenable: _selectedEvents,
+                            builder: (context, value, _) {
+                              return ListView.builder(
+                                itemCount: value.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                      vertical: 4.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: ListTile(
+                                      onTap: () => {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              Text bookingText = Text.rich(
+                                                TextSpan(
+                                                  // with no TextStyle it will have default text style
+                                                  text: '',
+                                                  children: <TextSpan>[
+                                                    const TextSpan(
+                                                        text: 'Code: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].code.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nStart Date: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].startDate.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nStart Time: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].startTime.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nEnd Date: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].endDate.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nEnd Time: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].endTime.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nRoom: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].room.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nReason: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].reason.v}\n"),
+                                                    const TextSpan(
+                                                        text: '\nBooked By: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${value[index].bookedBy.v}\n"),
+                                                    const TextSpan(
+                                                        text:
+                                                            '\nDate & Time of Booking:\n\n',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text: DateFormat(
+                                                                "dd MMM yyyy hh:mm a")
+                                                            .format(DateTime
+                                                                .fromMillisecondsSinceEpoch(value[
+                                                                        index]
+                                                                    .bookedDate
+                                                                    .valueOrThrow))),
+                                                  ],
+                                                ),
+                                              );
+
+                                              // String bookingDetails =
+                                              //     "Code: ${value[index].code}\nStart Date: ${value[index].startDate}\nStart Time: ${value[index].startTime}\nEnd Date: ${value[index].endDate}\nEnd Time: ${value[index].endTime}\nRoom: ${value[index].room}\nReason: ${value[index].reason}\nBooked By: ${value[index].bookedBy}\nBooked Time: ${value[index].bookedTime}\n";
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    "Booking Details"),
+                                                titleTextStyle: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                                content: bookingText,
+                                                actions: [
+                                                  ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      elevation: 3,
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(8),
+                                                      child: Text('OK',
+                                                          style: TextStyle(
+                                                              fontSize: 16)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            })
+                                      },
+                                      title: Text(value[index].toSummary()),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              );
+                  ));
             }));
   }
 
   _saveRoomBooking([bool mounted = true]) async {
-    // if (kDebugMode) {
-    //   print("_selectedDay $_selectedDay");
-    //   print("_rangeStart $_rangeStart");
-    //   print("_rangeEnd $_rangeEnd");
-    //   print("_timeStart $_timeStart");
-    //   print("_timeEnd $_timeEnd");
-    //   print("roomDropdownValue $roomDropdownValue");
-    //   print("reasonDropdownValue $reasonDropdownValue");
-    //   print("_rangeSelectionMode $_rangeSelectionMode");
-    // }
     showDialog(
         // The user CANNOT close this dialog  by pressing outsite it
         barrierDismissible: false,
@@ -892,6 +1030,13 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             ),
           );
         });
+    await _bookingLogic();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    _clearEverything();
+  }
+
+  _bookingLogic() async {
     if (_isNotRecurring) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
         var days = daysInRange(_rangeStart!, _rangeEnd!);
@@ -1065,9 +1210,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
     } else {
       _selectedEvents.value = await _getEventsForDay(_selectedDay!);
     }
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    _clearEverything();
   }
 
   _clearEverything() {
