@@ -190,7 +190,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                     },
                   ),
                   Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 3,
@@ -1084,6 +1084,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
           }
         }
       }
+    } else {
+      Utils.showAlertDialog(context, "OK", "No booking type selected",
+          "Please select at least one booking recurring type.");
     }
     if (_selectedDay == null) {
       _selectedEvents.value =
