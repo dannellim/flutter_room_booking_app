@@ -620,7 +620,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               alignment: Alignment
                                                                   .centerLeft,
                                                               child: SizedBox(
-                                                                width: 110,
+                                                                width: 120,
                                                                 child:
                                                                     CheckboxListTile(
                                                                   contentPadding:
@@ -658,7 +658,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               alignment: Alignment
                                                                   .centerLeft,
                                                               child: SizedBox(
-                                                                width: 110,
+                                                                width: 120,
                                                                 child:
                                                                     AbsorbPointer(
                                                                   absorbing: _rangeSelectionMode ==
@@ -701,7 +701,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               alignment: Alignment
                                                                   .centerLeft,
                                                               child: SizedBox(
-                                                                width: 110,
+                                                                width: 120,
                                                                 child:
                                                                     CheckboxListTile(
                                                                   contentPadding:
@@ -738,7 +738,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               alignment: Alignment
                                                                   .centerLeft,
                                                               child: SizedBox(
-                                                                width: 110,
+                                                                width: 120,
                                                                 child:
                                                                     CheckboxListTile(
                                                                   contentPadding:
