@@ -502,15 +502,31 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   textAlign: TextAlign.left),
                                             ),
 
-                                            Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 16,
+                                                  left: 0,
+                                                  right: 0,
+                                                  bottom: 16),
+                                              child: Flex(
+                                                  direction: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width >=
+                                                          768
+                                                      ? Axis.horizontal
+                                                      : Axis
+                                                          .vertical, // this is unique
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 150,
                                                       child: CheckboxListTile(
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
                                                         title: const Text('No'),
                                                         value: _isNotRecurring,
                                                         controlAffinity:
@@ -533,46 +549,48 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                         },
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 150,
                                                       child: AbsorbPointer(
-                                                          absorbing:
-                                                              _rangeSelectionMode ==
-                                                                  RangeSelectionMode
-                                                                      .toggledOn,
-                                                          child:
-                                                              CheckboxListTile(
-                                                            title: const Text(
-                                                                'Daily'),
-                                                            value:
-                                                                _isRecurringDaily,
-                                                            controlAffinity:
-                                                                ListTileControlAffinity
-                                                                    .leading,
-                                                            onChanged:
-                                                                (bool? value) {
-                                                              setState(() {
-                                                                _isNotRecurring =
-                                                                    false;
-                                                                _isRecurringDaily =
-                                                                    value!;
-                                                                _isRecurringWeekly =
-                                                                    false;
-                                                                _isRecurringMonthly =
-                                                                    false;
-                                                                _isRecurringYearly =
-                                                                    false;
-                                                              });
-                                                            },
-                                                          )),
+                                                        absorbing:
+                                                            _rangeSelectionMode ==
+                                                                RangeSelectionMode
+                                                                    .toggledOn,
+                                                        child: CheckboxListTile(
+                                                          contentPadding:
+                                                              EdgeInsets.zero,
+                                                          title: const Text(
+                                                              'Daily'),
+                                                          value:
+                                                              _isRecurringDaily,
+                                                          controlAffinity:
+                                                              ListTileControlAffinity
+                                                                  .leading,
+                                                          onChanged:
+                                                              (bool? value) {
+                                                            setState(() {
+                                                              _isNotRecurring =
+                                                                  false;
+                                                              _isRecurringDaily =
+                                                                  value!;
+                                                              _isRecurringWeekly =
+                                                                  false;
+                                                              _isRecurringMonthly =
+                                                                  false;
+                                                              _isRecurringYearly =
+                                                                  false;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 150,
                                                       child: CheckboxListTile(
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
                                                         title: const Text(
                                                             'Weekly'),
                                                         controlAffinity:
@@ -597,11 +615,12 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                         },
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 150,
                                                       child: CheckboxListTile(
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
                                                         title: const Text(
                                                             'Monthly'),
                                                         controlAffinity:
@@ -626,37 +645,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                         },
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: CheckboxListTile(
-                                                        title: const Text(
-                                                            'Yearly'),
-                                                        value:
-                                                            _isRecurringYearly,
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                value!;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ]),
+                                                  ]),
+                                            ),
 
                                             Center(
                                               child: Padding(
