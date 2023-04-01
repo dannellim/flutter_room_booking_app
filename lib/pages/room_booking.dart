@@ -522,49 +522,19 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: <Widget>[
-                                                    SizedBox(
-                                                      height: 50,
-                                                      width: 150,
-                                                      child: CheckboxListTile(
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        title: const Text('No'),
-                                                        value: _isNotRecurring,
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                value!;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 50,
-                                                      width: 150,
-                                                      child: AbsorbPointer(
-                                                        absorbing:
-                                                            _rangeSelectionMode ==
-                                                                RangeSelectionMode
-                                                                    .toggledOn,
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: SizedBox(
+                                                        height: 50,
+                                                        width: 120,
                                                         child: CheckboxListTile(
                                                           contentPadding:
                                                               EdgeInsets.zero,
-                                                          title: const Text(
-                                                              'Daily'),
+                                                          title:
+                                                              const Text('No'),
                                                           value:
-                                                              _isRecurringDaily,
+                                                              _isNotRecurring,
                                                           controlAffinity:
                                                               ListTileControlAffinity
                                                                   .leading,
@@ -572,9 +542,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               (bool? value) {
                                                             setState(() {
                                                               _isNotRecurring =
-                                                                  false;
-                                                              _isRecurringDaily =
                                                                   value!;
+                                                              _isRecurringDaily =
+                                                                  false;
                                                               _isRecurringWeekly =
                                                                   false;
                                                               _isRecurringMonthly =
@@ -586,64 +556,113 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 50,
-                                                      width: 150,
-                                                      child: CheckboxListTile(
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        title: const Text(
-                                                            'Weekly'),
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        value:
-                                                            _isRecurringWeekly,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                value!;
-                                                            _isRecurringMonthly =
-                                                                false;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: SizedBox(
+                                                        height: 50,
+                                                        width: 120,
+                                                        child: AbsorbPointer(
+                                                          absorbing:
+                                                              _rangeSelectionMode ==
+                                                                  RangeSelectionMode
+                                                                      .toggledOn,
+                                                          child:
+                                                              CheckboxListTile(
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            title: const Text(
+                                                                'Daily'),
+                                                            value:
+                                                                _isRecurringDaily,
+                                                            controlAffinity:
+                                                                ListTileControlAffinity
+                                                                    .leading,
+                                                            onChanged:
+                                                                (bool? value) {
+                                                              setState(() {
+                                                                _isNotRecurring =
+                                                                    false;
+                                                                _isRecurringDaily =
+                                                                    value!;
+                                                                _isRecurringWeekly =
+                                                                    false;
+                                                                _isRecurringMonthly =
+                                                                    false;
+                                                                _isRecurringYearly =
+                                                                    false;
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 50,
-                                                      width: 150,
-                                                      child: CheckboxListTile(
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        title: const Text(
-                                                            'Monthly'),
-                                                        controlAffinity:
-                                                            ListTileControlAffinity
-                                                                .leading,
-                                                        value:
-                                                            _isRecurringMonthly,
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
-                                                            _isNotRecurring =
-                                                                false;
-                                                            _isRecurringDaily =
-                                                                false;
-                                                            _isRecurringWeekly =
-                                                                false;
-                                                            _isRecurringMonthly =
-                                                                value!;
-                                                            _isRecurringYearly =
-                                                                false;
-                                                          });
-                                                        },
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: SizedBox(
+                                                        height: 50,
+                                                        width: 120,
+                                                        child: CheckboxListTile(
+                                                          contentPadding:
+                                                              EdgeInsets.zero,
+                                                          title: const Text(
+                                                              'Weekly'),
+                                                          controlAffinity:
+                                                              ListTileControlAffinity
+                                                                  .leading,
+                                                          value:
+                                                              _isRecurringWeekly,
+                                                          onChanged:
+                                                              (bool? value) {
+                                                            setState(() {
+                                                              _isNotRecurring =
+                                                                  false;
+                                                              _isRecurringDaily =
+                                                                  false;
+                                                              _isRecurringWeekly =
+                                                                  value!;
+                                                              _isRecurringMonthly =
+                                                                  false;
+                                                              _isRecurringYearly =
+                                                                  false;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: SizedBox(
+                                                        height: 50,
+                                                        width: 120,
+                                                        child: CheckboxListTile(
+                                                          contentPadding:
+                                                              EdgeInsets.zero,
+                                                          title: const Text(
+                                                              'Monthly'),
+                                                          controlAffinity:
+                                                              ListTileControlAffinity
+                                                                  .leading,
+                                                          value:
+                                                              _isRecurringMonthly,
+                                                          onChanged:
+                                                              (bool? value) {
+                                                            setState(() {
+                                                              _isNotRecurring =
+                                                                  false;
+                                                              _isRecurringDaily =
+                                                                  false;
+                                                              _isRecurringWeekly =
+                                                                  false;
+                                                              _isRecurringMonthly =
+                                                                  value!;
+                                                              _isRecurringYearly =
+                                                                  false;
+                                                            });
+                                                          },
+                                                        ),
                                                       ),
                                                     ),
                                                   ]),
