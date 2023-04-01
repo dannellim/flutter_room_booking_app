@@ -216,6 +216,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                             return StatefulBuilder(
                               builder: (context, setState) {
                                 return AlertDialog(
+                                    insetPadding: const EdgeInsets.all(16),
+                                    contentPadding: const EdgeInsets.all(16),
                                     scrollable: true,
                                     content: Stack(
                                       alignment: Alignment.center,
@@ -492,7 +494,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   top: 16,
                                                   left: 0,
                                                   right: 0,
-                                                  bottom: 16),
+                                                  bottom: 0),
                                               child: const Text(
                                                   "Is this booking recurring?",
                                                   style: TextStyle(
@@ -509,14 +511,13 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   right: 0,
                                                   bottom: 16),
                                               child: Flex(
-                                                  direction: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width >=
-                                                          768
-                                                      ? Axis.horizontal
-                                                      : Axis
-                                                          .vertical, // this is unique
+                                                  direction:
+                                                      MediaQuery.of(context)
+                                                                  .size
+                                                                  .width >=
+                                                              768
+                                                          ? Axis.horizontal
+                                                          : Axis.vertical,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
