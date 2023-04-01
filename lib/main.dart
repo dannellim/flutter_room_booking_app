@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:room_booking_app/behaviors/no_scroll_behavior.dart';
 import 'package:room_booking_app/pages/room_booking.dart';
 
 import 'app.dart';
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Flutter Room Booking App',
       theme: ThemeData(
         // This is the theme of your application.
