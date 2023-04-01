@@ -689,12 +689,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                               ),
                                               Center(
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 16,
-                                                          left: 0,
-                                                          right: 0,
-                                                          bottom: 0),
+                                                  padding: EdgeInsets.zero,
                                                   child: ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
