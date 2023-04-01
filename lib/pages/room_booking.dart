@@ -241,243 +241,263 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Start Date: ",
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        Text(
-                                                            DateFormat(
-                                                                    "dd MMMM yyyy")
-                                                                .format(
-                                                                    _rangeStart!),
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        IconButton(
-                                                            icon: const Icon(
-                                                                Icons.edit),
-                                                            iconSize: 16,
-                                                            onPressed:
-                                                                () async {
-                                                              // your code
-                                                              final DateTime?
-                                                                  picked =
-                                                                  await showDatePicker(
+                                                    Flex(
+                                                        direction: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width >=
+                                                                768
+                                                            ? Axis.horizontal
+                                                            : Axis.vertical,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: <Widget>[
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "Start Date: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  DateFormat(
+                                                                          "dd MMMM yyyy")
+                                                                      .format(
+                                                                          _rangeStart!),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    final DateTime? picked = await showDatePicker(
+                                                                        context:
+                                                                            context,
+                                                                        initialDate:
+                                                                            _rangeStart!,
+                                                                        firstDate:
+                                                                            _firstDay,
+                                                                        lastDate:
+                                                                            _lastDay);
+                                                                    if (picked !=
+                                                                            null &&
+                                                                        picked !=
+                                                                            (_selectedDay != null
+                                                                                ? _selectedDay!
+                                                                                : _rangeStart!)) {
+                                                                      setState(
+                                                                          () {
+                                                                        _rangeStart =
+                                                                            picked;
+                                                                        // _selectedDay != null
+                                                                        //     ? _selectedDay =
+                                                                        //         picked
+                                                                        //     : _rangeStart =
+                                                                        //         picked;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "Start Time: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  _timeStart
+                                                                      .format(
+                                                                          context),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    TimeOfDay?
+                                                                        selectedTime24Hour =
+                                                                        await showTimePicker(
                                                                       context:
                                                                           context,
-                                                                      initialDate:
-                                                                          _rangeStart!,
-                                                                      firstDate:
-                                                                          _firstDay,
-                                                                      lastDate:
-                                                                          _lastDay);
-                                                              if (picked !=
-                                                                      null &&
-                                                                  picked !=
-                                                                      (_selectedDay !=
-                                                                              null
-                                                                          ? _selectedDay!
-                                                                          : _rangeStart!)) {
-                                                                setState(() {
-                                                                  _rangeStart =
-                                                                      picked;
-                                                                  // _selectedDay != null
-                                                                  //     ? _selectedDay =
-                                                                  //         picked
-                                                                  //     : _rangeStart =
-                                                                  //         picked;
-                                                                });
-                                                              }
-                                                            })
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                            "Start Time: ",
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        Text(
-                                                            _timeStart.format(
-                                                                context),
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        IconButton(
-                                                            icon: const Icon(
-                                                                Icons.edit),
-                                                            iconSize: 16,
-                                                            onPressed:
-                                                                () async {
-                                                              // your code
-                                                              TimeOfDay?
-                                                                  selectedTime24Hour =
-                                                                  await showTimePicker(
-                                                                context:
-                                                                    context,
-                                                                initialTime:
-                                                                    _timeStart,
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    Widget?
-                                                                        child) {
-                                                                  return MediaQuery(
-                                                                    data: MediaQuery.of(
-                                                                            context)
-                                                                        .copyWith(
-                                                                            alwaysUse24HourFormat:
-                                                                                true),
-                                                                    child:
-                                                                        child!,
-                                                                  );
-                                                                },
-                                                              );
+                                                                      initialTime:
+                                                                          _timeStart,
+                                                                      builder: (BuildContext
+                                                                              context,
+                                                                          Widget?
+                                                                              child) {
+                                                                        return MediaQuery(
+                                                                          data:
+                                                                              MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                                          child:
+                                                                              child!,
+                                                                        );
+                                                                      },
+                                                                    );
 
-                                                              if (selectedTime24Hour !=
-                                                                      null &&
-                                                                  selectedTime24Hour !=
-                                                                      _timeStart) {
-                                                                setState(() {
-                                                                  _timeStart =
-                                                                      selectedTime24Hour;
-                                                                });
-                                                              }
-                                                            })
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text("End Date: ",
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        Text(
-                                                            DateFormat(
-                                                                    "dd MMMM yyyy")
-                                                                .format(
-                                                                    _rangeEnd!),
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        IconButton(
-                                                            icon: const Icon(
-                                                                Icons.edit),
-                                                            iconSize: 16,
-                                                            onPressed:
-                                                                () async {
-                                                              // your code
-                                                              final DateTime?
-                                                                  picked =
-                                                                  await showDatePicker(
+                                                                    if (selectedTime24Hour !=
+                                                                            null &&
+                                                                        selectedTime24Hour !=
+                                                                            _timeStart) {
+                                                                      setState(
+                                                                          () {
+                                                                        _timeStart =
+                                                                            selectedTime24Hour;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "End Date: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  DateFormat(
+                                                                          "dd MMMM yyyy")
+                                                                      .format(
+                                                                          _rangeEnd!),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    final DateTime? picked = await showDatePicker(
+                                                                        context:
+                                                                            context,
+                                                                        initialDate:
+                                                                            _rangeEnd!,
+                                                                        firstDate:
+                                                                            _firstDay,
+                                                                        lastDate:
+                                                                            _lastDay);
+                                                                    if (picked !=
+                                                                            null &&
+                                                                        picked !=
+                                                                            (_selectedDay != null
+                                                                                ? _selectedDay!
+                                                                                : _rangeEnd!)) {
+                                                                      setState(
+                                                                          () {
+                                                                        _rangeEnd =
+                                                                            picked;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const Text(
+                                                                  "End Time: ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              Text(
+                                                                  _timeEnd.format(
+                                                                      context),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              IconButton(
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .edit),
+                                                                  iconSize: 16,
+                                                                  onPressed:
+                                                                      () async {
+                                                                    // your code
+                                                                    TimeOfDay?
+                                                                        selectedTime24Hour =
+                                                                        await showTimePicker(
                                                                       context:
                                                                           context,
-                                                                      initialDate:
-                                                                          _rangeEnd!,
-                                                                      firstDate:
-                                                                          _firstDay,
-                                                                      lastDate:
-                                                                          _lastDay);
-                                                              if (picked !=
-                                                                      null &&
-                                                                  picked !=
-                                                                      (_selectedDay !=
-                                                                              null
-                                                                          ? _selectedDay!
-                                                                          : _rangeEnd!)) {
-                                                                setState(() {
-                                                                  _rangeEnd =
-                                                                      picked;
-                                                                });
-                                                              }
-                                                            })
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text("End Time: ",
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        Text(
-                                                            _timeEnd.format(
-                                                                context),
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        IconButton(
-                                                            icon: const Icon(
-                                                                Icons.edit),
-                                                            iconSize: 16,
-                                                            onPressed:
-                                                                () async {
-                                                              // your code
-                                                              TimeOfDay?
-                                                                  selectedTime24Hour =
-                                                                  await showTimePicker(
-                                                                context:
-                                                                    context,
-                                                                initialTime:
-                                                                    _timeEnd,
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    Widget?
-                                                                        child) {
-                                                                  return MediaQuery(
-                                                                    data: MediaQuery.of(
-                                                                            context)
-                                                                        .copyWith(
-                                                                            alwaysUse24HourFormat:
-                                                                                true),
-                                                                    child:
-                                                                        child!,
-                                                                  );
-                                                                },
-                                                              );
+                                                                      initialTime:
+                                                                          _timeEnd,
+                                                                      builder: (BuildContext
+                                                                              context,
+                                                                          Widget?
+                                                                              child) {
+                                                                        return MediaQuery(
+                                                                          data:
+                                                                              MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                                          child:
+                                                                              child!,
+                                                                        );
+                                                                      },
+                                                                    );
 
-                                                              if (selectedTime24Hour !=
-                                                                      null &&
-                                                                  selectedTime24Hour !=
-                                                                      _timeEnd) {
-                                                                setState(() {
-                                                                  _timeEnd =
-                                                                      selectedTime24Hour;
-                                                                });
-                                                              }
-                                                            })
-                                                      ],
-                                                    ),
+                                                                    if (selectedTime24Hour !=
+                                                                            null &&
+                                                                        selectedTime24Hour !=
+                                                                            _timeEnd) {
+                                                                      setState(
+                                                                          () {
+                                                                        _timeEnd =
+                                                                            selectedTime24Hour;
+                                                                      });
+                                                                    }
+                                                                  })
+                                                            ],
+                                                          ),
+                                                        ]),
                                                     Container(
                                                       margin:
                                                           const EdgeInsets.only(
