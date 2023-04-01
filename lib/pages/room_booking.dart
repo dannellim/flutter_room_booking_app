@@ -989,16 +989,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   }
 
   _saveRoomBooking([bool mounted = true]) async {
-    // if (kDebugMode) {
-    //   print("_selectedDay $_selectedDay");
-    //   print("_rangeStart $_rangeStart");
-    //   print("_rangeEnd $_rangeEnd");
-    //   print("_timeStart $_timeStart");
-    //   print("_timeEnd $_timeEnd");
-    //   print("roomDropdownValue $roomDropdownValue");
-    //   print("reasonDropdownValue $reasonDropdownValue");
-    //   print("_rangeSelectionMode $_rangeSelectionMode");
-    // }
     showDialog(
         // The user CANNOT close this dialog  by pressing outsite it
         barrierDismissible: false,
@@ -1024,6 +1014,13 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             ),
           );
         });
+    await _bookingLogic();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    _clearEverything();
+  }
+
+  _bookingLogic() async {
     if (_isNotRecurring) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
         var days = daysInRange(_rangeStart!, _rangeEnd!);
@@ -1197,9 +1194,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
     } else {
       _selectedEvents.value = await _getEventsForDay(_selectedDay!);
     }
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    _clearEverything();
   }
 
   _clearEverything() {
