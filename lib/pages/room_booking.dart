@@ -704,6 +704,23 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               0.05),
                                                     ),
                                                     onPressed: () async {
+                                                      if (_isNotRecurring ==
+                                                              false &&
+                                                          _isRecurringDaily ==
+                                                              false &&
+                                                          _isRecurringWeekly ==
+                                                              false &&
+                                                          _isRecurringMonthly ==
+                                                              false &&
+                                                          _isRecurringYearly ==
+                                                              false) {
+                                                        Utils.showAlertDialog(
+                                                            context,
+                                                            "OK",
+                                                            "No booking type selected",
+                                                            "Please select at least one booking recurring type.");
+                                                        return;
+                                                      }
                                                       await _saveRoomBooking();
                                                       // ignore: use_build_context_synchronously
                                                       Navigator.pop(context);
@@ -1084,9 +1101,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
           }
         }
       }
-    } else {
-      Utils.showAlertDialog(context, "OK", "No booking type selected",
-          "Please select at least one booking recurring type.");
     }
     if (_selectedDay == null) {
       _selectedEvents.value =
