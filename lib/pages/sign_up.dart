@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:room_booking_app/app.dart';
+import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
 
@@ -26,8 +29,7 @@ class SignupPageState extends State<SignUpPage> {
   late bool _emailVaild;
   late bool _numVaild;
   late bool _passwordVisible;
-  final passwordController = TextEditingController();
-  final emailController = TextEditingController();
+
   String? get _errorText {
     // // at any time, we can get the text from _controller.value.text
     final text = emailController.value.text;
@@ -40,10 +42,9 @@ class SignupPageState extends State<SignUpPage> {
     return null;
   }
 
-  final numController = TextEditingController();
   String? get _numErrorText {
     // // at any time, we can get the text from _controller.value.text
-    final text = numController.value.text;
+    final text = _numController.value.text;
     if (text.length == 8) {
       _numVaild = true;
     } else {
@@ -59,10 +60,19 @@ class SignupPageState extends State<SignUpPage> {
     });
   }
 
+  final _numController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+
   @override
   void dispose() {
-    emailController.dispose();
-    numController.dispose();
+    _emailController.dispose();
+    _numController.dispose();
+    _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
@@ -75,10 +85,10 @@ class SignupPageState extends State<SignUpPage> {
   }
 
   static const List<String> serviceList = TestData.serviceList;
-  String serviceDropdownValue = serviceList.first;
+  String _serviceDropdownValue = serviceList.first;
 
   static const List<String> cellList = TestData.cellList;
-  String cellDropdownValue = cellList.first;
+  String _cellDropdownValue = cellList.first;
 
   bool _is8Character = false;
   bool _is1Upper = false;
@@ -88,7 +98,7 @@ class SignupPageState extends State<SignUpPage> {
 
   String? get _pwdErrorText {
     // // at any time, we can get the text from _controller.value.text
-    final text = passwordController.value.text;
+    final text = _passwordController.value.text;
     _is8Character = Utils.isMin8Char(text);
     _is1Upper = Utils.is1UpperChar(text);
     _is1Lower = Utils.is1LowerChar(text);
@@ -135,6 +145,7 @@ class SignupPageState extends State<SignUpPage> {
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(), labelText: 'First Name'),
                   inputFormatters: [UpperCaseTextFormatter()],
+                  controller: _firstNameController,
                 ),
               ),
               Container(
@@ -154,6 +165,7 @@ class SignupPageState extends State<SignUpPage> {
                     border: OutlineInputBorder(),
                     labelText: 'Last Name',
                   ),
+                  controller: _lastNameController,
                 ),
               ),
               Container(
@@ -172,7 +184,7 @@ class SignupPageState extends State<SignUpPage> {
                     }
                   },
                   inputFormatters: [LowerCaseTextFormatter()],
-                  controller: emailController,
+                  controller: _emailController,
                   onChanged: (text) => setState(() {}),
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
@@ -202,7 +214,7 @@ class SignupPageState extends State<SignUpPage> {
                         return 'Invalid phone number';
                       }
                     },
-                    controller: numController,
+                    controller: _numController,
                     onChanged: (text) => setState(() {}),
                     decoration: InputDecoration(
                         border: const OutlineInputBorder(),
@@ -229,12 +241,12 @@ class SignupPageState extends State<SignUpPage> {
                     labelText: 'Service',
                   ),
                   isExpanded: true,
-                  value: serviceDropdownValue,
+                  value: _serviceDropdownValue,
                   icon: const Icon(Icons.arrow_drop_down),
                   onChanged: (String? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      serviceDropdownValue = value!;
+                      _serviceDropdownValue = value!;
                     });
                   },
                   items:
@@ -255,12 +267,12 @@ class SignupPageState extends State<SignUpPage> {
                     labelText: 'Cell Group',
                   ),
                   isExpanded: true,
-                  value: cellDropdownValue,
+                  value: _cellDropdownValue,
                   icon: const Icon(Icons.arrow_drop_down),
                   onChanged: (String? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      cellDropdownValue = value!;
+                      _cellDropdownValue = value!;
                     });
                   },
                   items: cellList.map<DropdownMenuItem<String>>((String value) {
@@ -285,7 +297,7 @@ class SignupPageState extends State<SignUpPage> {
                     top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   enabled: false,
-                  controller: emailController,
+                  controller: _emailController,
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText:
@@ -296,7 +308,7 @@ class SignupPageState extends State<SignUpPage> {
                 margin: const EdgeInsets.only(
                     top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
-                  controller: passwordController,
+                  controller: _passwordController,
                   obscureText: !_passwordVisible,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -454,14 +466,11 @@ class SignupPageState extends State<SignUpPage> {
                       minimumSize: Size(MediaQuery.of(context).size.width,
                           MediaQuery.of(context).size.height * 0.05),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        //_scaffoldBar('Logging in...');
                       }
                     },
                     child: const Padding(
@@ -476,5 +485,27 @@ class SignupPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  _saveUserProfile([bool mounted = true]) async {
+    UiUtils.loadingSpinner(context);
+    await _userProfileLogic();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+  }
+
+  _userProfileLogic() async {
+    await userProfileProvider.saveProfile(DbUserProfile()
+      ..id = DateTime.now().millisecondsSinceEpoch
+      ..username.v = _emailController.text
+      ..password.v = _passwordController.text
+      ..firstName.v = _firstNameController.text
+      ..lastName.v = _lastNameController.text
+      ..email.v = _emailController.text
+      ..handphoneNumber.v = _numController.text
+      ..service.v = _serviceDropdownValue
+      ..cell.v = _cellDropdownValue
+      ..isAdmin.v = false
+      ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
   }
 }
