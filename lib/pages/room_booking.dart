@@ -811,7 +811,10 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               return;
                                                             }
                                                             await _saveRoomBooking();
-                                                            // ignore: use_build_context_synchronously
+                                                            if (context
+                                                                .mounted) {
+                                                              return;
+                                                            }
                                                             Navigator.pop(
                                                                 context);
                                                           },

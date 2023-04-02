@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:room_booking_app/app.dart';
 import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/crypto_utils.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
@@ -32,7 +33,7 @@ class SignupPageState extends State<SignUpPage> {
 
   String? get _errorText {
     // // at any time, we can get the text from _controller.value.text
-    final text = emailController.value.text;
+    final text = _emailController.value.text;
     if (Utils.isEmailValid(text)) {
       _emailVaild = true;
     } else {
@@ -469,6 +470,10 @@ class SignupPageState extends State<SignUpPage> {
                     onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
+                        await _saveUserProfile();
+                        if (context.mounted) {
+                          return;
+                        }
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
                       }
@@ -497,14 +502,15 @@ class SignupPageState extends State<SignUpPage> {
   _userProfileLogic() async {
     await userProfileProvider.saveProfile(DbUserProfile()
       ..id = DateTime.now().millisecondsSinceEpoch
-      ..username.v = _emailController.text
-      ..password.v = _passwordController.text
-      ..firstName.v = _firstNameController.text
-      ..lastName.v = _lastNameController.text
-      ..email.v = _emailController.text
-      ..handphoneNumber.v = _numController.text
-      ..service.v = _serviceDropdownValue
-      ..cell.v = _cellDropdownValue
+      ..username.v = _emailController.text.trim().toLowerCase()
+      ..password.v = CryptoUtils.encrypt(
+          _emailController.text.trim().toLowerCase(), _passwordController.text)
+      ..firstName.v = _firstNameController.text.trim().toUpperCase()
+      ..lastName.v = _lastNameController.text.trim().toUpperCase()
+      ..email.v = _emailController.text.trim().toLowerCase()
+      ..handphoneNumber.v = _numController.text.trim()
+      ..service.v = _serviceDropdownValue.trim().toUpperCase()
+      ..cell.v = _cellDropdownValue.trim().toUpperCase()
       ..isAdmin.v = false
       ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
   }
