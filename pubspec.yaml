@@ -52,6 +52,7 @@ dependencies:
       path: app_sembast
       ref: dart2_3
       version: '>=0.4.2'
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:
