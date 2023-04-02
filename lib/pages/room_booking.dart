@@ -221,7 +221,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                               _isNotRecurring = true;
                               _isRecurringDaily = false;
                               _isRecurringWeekly = false;
-                              _isRecurringMonthly = false!;
+                              _isRecurringMonthly = false;
                               _isRecurringYearly = false;
                               showDialog(
                                   context: context,
