@@ -1,10 +1,43 @@
-import 'package:flutter/material.dart';
-
 class Utils {
   static bool isEmailValid(String email) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]{3,}")
         .hasMatch(email);
+  }
+
+  static String? passwordCheck(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (isPasswordValid(password)) {
+      return null;
+    } else {
+      String error = "Password needs to ";
+      if (!isMin8Char(password)) {
+        error += "be at least 8 characters; ";
+      }
+      if (!is1UpperChar(password)) {
+        error += "have at least ONE uppercase character; ";
+      }
+      if (!is1LowerChar(password)) {
+        error += "have at least ONE lowercase character; ";
+      }
+      if (!is1Digit(password)) {
+        error += "have at least ONE digit; ";
+      }
+      if (!is1SpecChar(password)) {
+        error += "have at least special character; ";
+      }
+      return error;
+    }
+  }
+
+  static bool isPasswordValid(String password) {
+    return isMin8Char(password) &&
+        is1UpperChar(password) &&
+        is1LowerChar(password) &&
+        is1Digit(password) &&
+        is1SpecChar(password);
   }
 
   static bool isMin8Char(String text) {
@@ -25,33 +58,5 @@ class Utils {
 
   static bool is1SpecChar(String text) {
     return RegExp(r"(?=.*\W)").hasMatch(text);
-  }
-
-  static void showAlertDialog(
-      BuildContext context, String btnText, String title, String message) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text(btnText),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }

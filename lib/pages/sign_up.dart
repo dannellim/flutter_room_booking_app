@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:room_booking_app/app.dart';
+import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/crypto_utils.dart';
+import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
 
@@ -25,10 +29,11 @@ class SignupPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   late bool _emailVaild;
   late bool _numVaild;
-  final emailController = TextEditingController();
+  late bool _passwordVisible;
+
   String? get _errorText {
     // // at any time, we can get the text from _controller.value.text
-    final text = emailController.value.text;
+    final text = _emailController.value.text;
     if (Utils.isEmailValid(text)) {
       _emailVaild = true;
     } else {
@@ -38,10 +43,9 @@ class SignupPageState extends State<SignUpPage> {
     return null;
   }
 
-  final numController = TextEditingController();
   String? get _numErrorText {
     // // at any time, we can get the text from _controller.value.text
-    final text = numController.value.text;
+    final text = _numController.value.text;
     if (text.length == 8) {
       _numVaild = true;
     } else {
@@ -51,25 +55,59 @@ class SignupPageState extends State<SignUpPage> {
     return null;
   }
 
+  void _toggle() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
+
+  final _numController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+
   @override
   void dispose() {
-    emailController.dispose();
-    numController.dispose();
+    _emailController.dispose();
+    _numController.dispose();
+    _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    _passwordVisible = false;
     _emailVaild = false;
     _numVaild = false;
   }
 
   static const List<String> serviceList = TestData.serviceList;
-  String serviceDropdownValue = serviceList.first;
+  String _serviceDropdownValue = serviceList.first;
 
   static const List<String> cellList = TestData.cellList;
-  String cellDropdownValue = cellList.first;
+  String _cellDropdownValue = cellList.first;
+
+  bool _is8Character = false;
+  bool _is1Upper = false;
+  bool _is1Lower = false;
+  bool _is1Digit = false;
+  bool _is1Special = false;
+
+  String? get _pwdErrorText {
+    // // at any time, we can get the text from _controller.value.text
+    final text = _passwordController.value.text;
+    _is8Character = Utils.isMin8Char(text);
+    _is1Upper = Utils.is1UpperChar(text);
+    _is1Lower = Utils.is1LowerChar(text);
+    _is1Digit = Utils.is1Digit(text);
+    _is1Special = Utils.is1SpecChar(text);
+    // return null if the text is valid
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +123,17 @@ class SignupPageState extends State<SignUpPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                width: double.infinity,
                 margin: const EdgeInsets.only(
-                    top: 64, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: const Text('Profile Details',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -99,11 +146,12 @@ class SignupPageState extends State<SignUpPage> {
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(), labelText: 'First Name'),
                   inputFormatters: [UpperCaseTextFormatter()],
+                  controller: _firstNameController,
                 ),
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -118,11 +166,12 @@ class SignupPageState extends State<SignUpPage> {
                     border: OutlineInputBorder(),
                     labelText: 'Last Name',
                   ),
+                  controller: _lastNameController,
                 ),
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -136,12 +185,12 @@ class SignupPageState extends State<SignUpPage> {
                     }
                   },
                   inputFormatters: [LowerCaseTextFormatter()],
-                  controller: emailController,
+                  controller: _emailController,
                   onChanged: (text) => setState(() {}),
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText: 'test@example.com',
-                      labelText: 'Email',
+                      labelText: 'Email (This will be your username)',
                       errorText: _errorText,
                       suffixIcon: IconButton(
                           onPressed: null,
@@ -153,7 +202,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                     // The validator receives the text that the user has entered.
                     validator: (value) {
@@ -166,11 +215,11 @@ class SignupPageState extends State<SignUpPage> {
                         return 'Invalid phone number';
                       }
                     },
-                    controller: numController,
+                    controller: _numController,
                     onChanged: (text) => setState(() {}),
                     decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: 'Contact Number',
+                        labelText: 'Handphone Number',
                         errorText: _numErrorText,
                         suffixIcon: IconButton(
                             onPressed: null,
@@ -186,19 +235,19 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Service',
                   ),
                   isExpanded: true,
-                  value: serviceDropdownValue,
+                  value: _serviceDropdownValue,
                   icon: const Icon(Icons.arrow_drop_down),
                   onChanged: (String? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      serviceDropdownValue = value!;
+                      _serviceDropdownValue = value!;
                     });
                   },
                   items:
@@ -212,19 +261,19 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Cell Group',
                   ),
                   isExpanded: true,
-                  value: cellDropdownValue,
+                  value: _cellDropdownValue,
                   icon: const Icon(Icons.arrow_drop_down),
                   onChanged: (String? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      cellDropdownValue = value!;
+                      _cellDropdownValue = value!;
                     });
                   },
                   items: cellList.map<DropdownMenuItem<String>>((String value) {
@@ -235,24 +284,198 @@ class SignupPageState extends State<SignUpPage> {
                   }).toList(),
                 ),
               ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: const Text('Account Details',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: TextFormField(
+                  enabled: false,
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText:
+                          'Username (This is your email. You cannot change this.)'),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: !_passwordVisible,
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    return Utils.passwordCheck(value);
+                  },
+                  onChanged: (text) => setState(() {}),
+                  decoration: InputDecoration(
+                    errorText: _pwdErrorText,
+                    border: const OutlineInputBorder(),
+                    hintText: 'Password',
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(_passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: _toggle,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is8Character
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least 8 characters',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Upper
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE uppercase character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Lower
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE lowercase character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Digit
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE digit',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Special
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE special character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      top: 32, left: 32, right: 32, bottom: 16),
+                      top: 16, left: 16, right: 16, bottom: 16),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 3,
-                      minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                      minimumSize: Size(MediaQuery.of(context).size.width,
                           MediaQuery.of(context).size.height * 0.05),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
+                        await _saveUserProfile();
+                        if (context.mounted) {
+                          return;
+                        }
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        //_scaffoldBar('Logging in...');
                       }
                     },
                     child: const Padding(
@@ -267,5 +490,28 @@ class SignupPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  _saveUserProfile([bool mounted = true]) async {
+    UiUtils.loadingSpinner(context);
+    await _userProfileLogic();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+  }
+
+  _userProfileLogic() async {
+    await userProfileProvider.saveProfile(DbUserProfile()
+      ..id = DateTime.now().millisecondsSinceEpoch
+      ..username.v = _emailController.text.trim().toLowerCase()
+      ..password.v = CryptoUtils.encrypt(
+          _emailController.text.trim().toLowerCase(), _passwordController.text)
+      ..firstName.v = _firstNameController.text.trim().toUpperCase()
+      ..lastName.v = _lastNameController.text.trim().toUpperCase()
+      ..email.v = _emailController.text.trim().toLowerCase()
+      ..handphoneNumber.v = _numController.text.trim()
+      ..service.v = _serviceDropdownValue.trim().toUpperCase()
+      ..cell.v = _cellDropdownValue.trim().toUpperCase()
+      ..isAdmin.v = false
+      ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
   }
 }
