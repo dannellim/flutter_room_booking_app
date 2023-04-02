@@ -1,18 +1,18 @@
-import 'package:room_booking_app/models/rm_booking.dart';
+import 'package:room_booking_app/models/user_profile.dart';
 import 'package:tekartik_app_flutter_sembast/sembast.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
-class DbRmBookingProvider {
-  static const String dbName = 'room_booking.db';
+class UserProfileProvider {
+  static const String dbName = 'user_profile.db';
   static const int kVersion1 = 1;
-  static const String rmBookingStoreName = 'room_booking';
+  static const String userProfileStoreName = 'user_profile';
   final lock = Lock(reentrant: true);
   final DatabaseFactory dbFactory;
   Database? db;
 
-  final bookingsStore = intMapStoreFactory.store(rmBookingStoreName);
+  final profilesStore = intMapStoreFactory.store(userProfileStoreName);
 
-  DbRmBookingProvider(this.dbFactory);
+  UserProfileProvider(this.dbFactory);
 
   Future<Database> openPath(String path) async {
     db = await dbFactory.openDatabase(path, version: kVersion1);
@@ -27,10 +27,10 @@ class DbRmBookingProvider {
         return db!;
       });
 
-  Future<DbRmBooking?> getBooking(int id) async {
-    var map = await bookingsStore.record(id).get(db!);
+  Future<DbUserProfile?> getProfile(int id) async {
+    var map = await profilesStore.record(id).get(db!);
     if (map != null) {
-      return DbRmBooking()
+      return DbUserProfile()
         ..fromMap(map)
         ..id = id;
     }
@@ -43,49 +43,51 @@ class DbRmBookingProvider {
 
   Future<String> fixPath(String path) async => path;
 
-  Future saveRmBooking(DbRmBooking dbRmBooking) async {
-    if (dbRmBooking.id != null) {
-      await bookingsStore.record(dbRmBooking.id!).put(db!, dbRmBooking.toMap());
+  Future saveProfile(DbUserProfile dbUserProfile) async {
+    if (dbUserProfile.id != null) {
+      await profilesStore
+          .record(dbUserProfile.id!)
+          .put(db!, dbUserProfile.toMap());
     } else {
-      dbRmBooking.id = await bookingsStore.add(db!, dbRmBooking.toMap());
+      dbUserProfile.id = await profilesStore.add(db!, dbUserProfile.toMap());
     }
   }
 
-  Future deleteRmBooking(int? id) async {
+  Future deleteProfile(int? id) async {
     if (id != null) {
-      await bookingsStore.record(id).delete(db!);
+      await profilesStore.record(id).delete(db!);
     }
   }
 
   var bookingsTransformer = StreamTransformer<
       List<RecordSnapshot<int, Map<String, Object?>>>,
-      List<DbRmBooking>>.fromHandlers(handleData: (snapshotList, sink) {
-    sink.add(DbRmBookings(snapshotList));
+      List<DbUserProfile>>.fromHandlers(handleData: (snapshotList, sink) {
+    sink.add(DbUserProfiles(snapshotList));
   });
 
   var bookingTransformer = StreamTransformer<
       RecordSnapshot<int, Map<String, Object?>>?,
-      DbRmBooking?>.fromHandlers(handleData: (snapshot, sink) {
-    sink.add(snapshot == null ? null : snapshotToBooking(snapshot));
+      DbUserProfile?>.fromHandlers(handleData: (snapshot, sink) {
+    sink.add(snapshot == null ? null : snapshotToProfile(snapshot));
   });
 
-  Stream<List<DbRmBooking>> onRmBookings() {
-    return bookingsStore
+  Stream<List<DbUserProfile>> onProfiles() {
+    return profilesStore
         .query(finder: Finder(sortOrders: [SortOrder('bookedDate', false)]))
         .onSnapshots(db!)
         .transform(bookingsTransformer);
   }
 
   /// Listed for changes on a given rm booking
-  Stream<DbRmBooking?> onRoomBooking(int id) {
-    return bookingsStore
+  Stream<DbUserProfile?> onProfile(int id) {
+    return profilesStore
         .record(id)
         .onSnapshot(db!)
         .transform(bookingTransformer);
   }
 
-  Future clearAllRoomBookings() async {
-    await bookingsStore.delete(db!);
+  Future clearAllProfiles() async {
+    await profilesStore.delete(db!);
     await getDatabaseFactory().deleteDatabase(db!.path);
   }
 
@@ -98,30 +100,30 @@ class DbRmBookingProvider {
   }
 }
 
-DbRmBooking snapshotToBooking(RecordSnapshot snapshot) {
-  return DbRmBooking()
+DbUserProfile snapshotToProfile(RecordSnapshot snapshot) {
+  return DbUserProfile()
     ..fromMap(snapshot.value as Map)
     ..id = snapshot.key as int;
 }
 
-class DbRmBookings extends ListBase<DbRmBooking> {
+class DbUserProfiles extends ListBase<DbUserProfile> {
   final List<RecordSnapshot<int, Map<String, Object?>>> list;
-  late List<DbRmBooking?> _cacheBookings;
+  late List<DbUserProfile?> _cacheProfiles;
 
-  DbRmBookings(this.list) {
-    _cacheBookings = List.generate(list.length, (index) => null);
+  DbUserProfiles(this.list) {
+    _cacheProfiles = List.generate(list.length, (index) => null);
   }
 
   @override
-  DbRmBooking operator [](int index) {
-    return _cacheBookings[index] ??= snapshotToBooking(list[index]);
+  DbUserProfile operator [](int index) {
+    return _cacheProfiles[index] ??= snapshotToProfile(list[index]);
   }
 
   @override
   int get length => list.length;
 
   @override
-  void operator []=(int index, DbRmBooking? value) => throw 'read-only';
+  void operator []=(int index, DbUserProfile? value) => throw 'read-only';
 
   @override
   set length(int newLength) => throw 'read-only';

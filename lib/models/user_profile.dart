@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:room_booking_app/models/db.dart';
 
-class UserProfile extends DbRecord {
+class DbUserProfile extends DbRecord {
   final username = CvField<String>('username');
   final password = CvField<String>('password');
   final firstName = CvField<String>('firstName');
