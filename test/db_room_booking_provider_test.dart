@@ -20,7 +20,7 @@ void main() {
         ..bookedBy.v = "test_save"
         ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onRmBookings().first;
-      expect(first.first.bookedBy.v, 'test');
+      expect(first.first.bookedBy.v, 'test_save');
       await provider.close();
     });
     test('edit', () async {
@@ -31,6 +31,7 @@ void main() {
         ..bookedBy.v = "test"
         ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onRmBookings().first;
+      expect(first.first.bookedBy.v, 'test');
       await provider.saveRmBooking(DbRmBooking()
         ..id = first.first.id
         ..bookedBy.v = "test_edit"
@@ -47,6 +48,7 @@ void main() {
         ..bookedBy.v = "test_delete"
         ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onRmBookings().first;
+      expect(first.first.bookedBy.v, 'test_delete');
       expect(first.length, 1);
       await provider.deleteRmBooking(first.first.id);
       first = await provider.onRmBookings().first;
