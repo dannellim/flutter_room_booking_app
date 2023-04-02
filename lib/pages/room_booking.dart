@@ -1006,7 +1006,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   }
 
   _saveRoomBooking([bool mounted = true]) async {
-    UiUtils.LoadingSpinner(context);
+    UiUtils.loadingSpinner(context);
     await _bookingLogic();
     if (!mounted) return;
     Navigator.of(context).pop();

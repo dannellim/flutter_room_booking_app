@@ -29,7 +29,7 @@ class UiUtils {
     );
   }
 
-  static void LoadingSpinner(BuildContext context) async {
+  static void loadingSpinner(BuildContext context) async {
     showDialog(
         // The user CANNOT close this dialog  by pressing outsite it
         barrierDismissible: false,
