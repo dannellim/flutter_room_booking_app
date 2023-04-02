@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/rm_booking.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/cal_utils.dart';
+import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/widgets/nav_drawer.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -207,7 +208,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                               if (_rangeSelectionMode ==
                                       RangeSelectionMode.toggledOn &&
                                   _rangeEnd == null) {
-                                Utils.showAlertDialog(
+                                UiUtils.showAlertDialog(
                                     context,
                                     "OK",
                                     "End date not selected!",
@@ -802,7 +803,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                                     false &&
                                                                 _isRecurringYearly ==
                                                                     false) {
-                                                              Utils.showAlertDialog(
+                                                              UiUtils.showAlertDialog(
                                                                   context,
                                                                   "OK",
                                                                   "No booking type selected",
@@ -1005,31 +1006,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   }
 
   _saveRoomBooking([bool mounted = true]) async {
-    showDialog(
-        // The user CANNOT close this dialog  by pressing outsite it
-        barrierDismissible: false,
-        context: context,
-        builder: (_) {
-          return Dialog(
-            // The background color
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  // The loading indicator
-                  CircularProgressIndicator(),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  // Some text
-                  Text('Loading...')
-                ],
-              ),
-            ),
-          );
-        });
+    UiUtils.LoadingSpinner(context);
     await _bookingLogic();
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -1064,7 +1041,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
       }
     } else if (_isRecurringDaily) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
-        Utils.showAlertDialog(context, "OK", "Daily recurring uavailable",
+        UiUtils.showAlertDialog(context, "OK", "Daily recurring uavailable",
             "Daily recurring booking is unavailable for date ranges.");
       } else {
         var days = daysInRange(_rangeStart!, lastDayOfCurrentYear());
