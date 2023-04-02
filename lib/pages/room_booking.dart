@@ -4,7 +4,6 @@ import 'package:room_booking_app/models/rm_booking.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/cal_utils.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
-import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/widgets/nav_drawer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
