@@ -114,10 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: !_passwordVisible,
                 // The validator receives the text that the user has entered.
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
+                  return Utils.passwordCheck(value);
                 },
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),

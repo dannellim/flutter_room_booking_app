@@ -25,6 +25,8 @@ class SignupPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   late bool _emailVaild;
   late bool _numVaild;
+  late bool _passwordVisible;
+  final passwordController = TextEditingController();
   final emailController = TextEditingController();
   String? get _errorText {
     // // at any time, we can get the text from _controller.value.text
@@ -51,6 +53,12 @@ class SignupPageState extends State<SignUpPage> {
     return null;
   }
 
+  void _toggle() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -61,6 +69,7 @@ class SignupPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
+    _passwordVisible = false;
     _emailVaild = false;
     _numVaild = false;
   }
@@ -70,6 +79,24 @@ class SignupPageState extends State<SignUpPage> {
 
   static const List<String> cellList = TestData.cellList;
   String cellDropdownValue = cellList.first;
+
+  bool _is8Character = false;
+  bool _is1Upper = false;
+  bool _is1Lower = false;
+  bool _is1Digit = false;
+  bool _is1Special = false;
+
+  String? get _pwdErrorText {
+    // // at any time, we can get the text from _controller.value.text
+    final text = passwordController.value.text;
+    _is8Character = Utils.isMin8Char(text);
+    _is1Upper = Utils.is1UpperChar(text);
+    _is1Lower = Utils.is1LowerChar(text);
+    _is1Digit = Utils.is1Digit(text);
+    _is1Special = Utils.is1SpecChar(text);
+    // return null if the text is valid
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +112,17 @@ class SignupPageState extends State<SignUpPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                width: double.infinity,
                 margin: const EdgeInsets.only(
-                    top: 64, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: const Text('Profile Details',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -103,7 +139,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -122,7 +158,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -141,7 +177,7 @@ class SignupPageState extends State<SignUpPage> {
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText: 'test@example.com',
-                      labelText: 'Email',
+                      labelText: 'Email (This will be your username)',
                       errorText: _errorText,
                       suffixIcon: IconButton(
                           onPressed: null,
@@ -153,7 +189,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: TextFormField(
                     // The validator receives the text that the user has entered.
                     validator: (value) {
@@ -170,7 +206,7 @@ class SignupPageState extends State<SignUpPage> {
                     onChanged: (text) => setState(() {}),
                     decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: 'Contact Number',
+                        labelText: 'Handphone Number',
                         errorText: _numErrorText,
                         suffixIcon: IconButton(
                             onPressed: null,
@@ -186,7 +222,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -212,7 +248,7 @@ class SignupPageState extends State<SignUpPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(
-                    top: 16, left: 32, right: 32, bottom: 0),
+                    top: 16, left: 16, right: 16, bottom: 0),
                 child: DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -235,14 +271,187 @@ class SignupPageState extends State<SignUpPage> {
                   }).toList(),
                 ),
               ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: const Text('Account Details',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: TextFormField(
+                  enabled: false,
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText:
+                          'Username (This is your email. You cannot change this.)'),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: !_passwordVisible,
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    return Utils.passwordCheck(value);
+                  },
+                  onChanged: (text) => setState(() {}),
+                  decoration: InputDecoration(
+                    errorText: _pwdErrorText,
+                    border: const OutlineInputBorder(),
+                    hintText: 'Password',
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(_passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: _toggle,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is8Character
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least 8 characters',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Upper
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE uppercase character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Lower
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE lowercase character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Digit
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE digit',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 8, left: 16, right: 16, bottom: 0),
+                child: Row(
+                  children: [
+                    _is1Special
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                          )
+                        : const Icon(
+                            Icons.remove_circle_rounded,
+                            color: Colors.red,
+                          ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                        child: Text('At least ONE special character',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(fontSize: 16))),
+                  ],
+                ),
+              ),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      top: 32, left: 32, right: 32, bottom: 16),
+                      top: 16, left: 16, right: 16, bottom: 16),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 3,
-                      minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                      minimumSize: Size(MediaQuery.of(context).size.width,
                           MediaQuery.of(context).size.height * 0.05),
                     ),
                     onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:room_booking_app/behaviors/no_scroll_behavior.dart';
+import 'package:room_booking_app/pages/login.dart';
 import 'package:room_booking_app/pages/room_booking.dart';
 
 import 'app.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blueGrey,
       ),
-      home: const RoomBookingPage(),
+      home: const LoginPage(),
     );
   }
 }
