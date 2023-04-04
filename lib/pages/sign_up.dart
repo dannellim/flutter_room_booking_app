@@ -7,6 +7,7 @@ import 'package:room_booking_app/utilities/crypto_utils.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 
 // Define a custom Form widget.
 class SignUpPage extends StatefulWidget {
@@ -21,6 +22,9 @@ class SignUpPage extends StatefulWidget {
 // Define a corresponding State class.
 // This class holds data related to the form.
 class SignupPageState extends State<SignUpPage> {
+  static const String saveSuccess = "saveSuccess";
+  static const String saveFail = "saveFail";
+  static const String saveExists = "saveExists";
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
@@ -470,12 +474,21 @@ class SignupPageState extends State<SignUpPage> {
                     onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
-                        await _saveUserProfile();
+                        var result = await _saveUserProfile(context.mounted);
                         if (context.mounted) {
-                          return;
+                          if (result == saveExists) {
+                            UiUtils.showAlertDialog(
+                                "OK", "Error", "This email is already in use.");
+                          } else if (result == saveSuccess) {
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                            UiUtils.showAlertDialog("OK", "Success",
+                                "Your account has been successfully created!");
+                          } else {
+                            UiUtils.showAlertDialog("OK", "Error",
+                                "Unable to create account. Please contact the helpdesk for more information.");
+                          }
                         }
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
                       }
                     },
                     child: const Padding(
@@ -492,26 +505,46 @@ class SignupPageState extends State<SignUpPage> {
     );
   }
 
-  _saveUserProfile([bool mounted = true]) async {
-    UiUtils.loadingSpinner(context);
-    await _userProfileLogic();
-    if (!mounted) return;
+  Future<String> _saveUserProfile([bool mounted = true]) async {
+    UiUtils.loadingSpinner();
+    var result = await _userProfileLogic();
+    if (!mounted) return saveFail;
     Navigator.of(context).pop();
+    return result;
   }
 
-  _userProfileLogic() async {
-    await userProfileProvider.saveProfile(DbUserProfile()
-      ..id = DateTime.now().millisecondsSinceEpoch
-      ..username.v = _emailController.text.trim().toLowerCase()
-      ..password.v = CryptoUtils.encrypt(
-          _emailController.text.trim().toLowerCase(), _passwordController.text)
-      ..firstName.v = _firstNameController.text.trim().toUpperCase()
-      ..lastName.v = _lastNameController.text.trim().toUpperCase()
-      ..email.v = _emailController.text.trim().toLowerCase()
-      ..handphoneNumber.v = _numController.text.trim()
-      ..service.v = _serviceDropdownValue.trim().toUpperCase()
-      ..cell.v = _cellDropdownValue.trim().toUpperCase()
-      ..isAdmin.v = false
-      ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+  Future<String> _userProfileLogic() async {
+    var result = saveFail;
+    var email = _emailController.text.trim().toLowerCase();
+    //check if email already exists
+    var profiles = HashSet<DbUserProfile>.from(
+        await userProfileProvider.onProfiles().first);
+    var profile =
+        profiles.where((item) => item.username.value?.toLowerCase() == email);
+    if (profile.length == 1) {
+      return saveExists;
+    }
+
+    try {
+      await userProfileProvider.saveProfile(DbUserProfile()
+        ..id = DateTime.now().millisecondsSinceEpoch
+        ..username.v = _emailController.text.trim().toLowerCase()
+        ..password.v = CryptoUtils.encrypt(
+            _emailController.text.trim().toLowerCase(),
+            _passwordController.text)
+        ..firstName.v = _firstNameController.text.trim().toUpperCase()
+        ..lastName.v = _lastNameController.text.trim().toUpperCase()
+        ..email.v = _emailController.text.trim().toLowerCase()
+        ..handphoneNumber.v = _numController.text.trim()
+        ..service.v = _serviceDropdownValue.trim().toUpperCase()
+        ..cell.v = _cellDropdownValue.trim().toUpperCase()
+        ..isAdmin.v = false
+        ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+      result = saveSuccess;
+    } on Exception catch (e, s) {
+      // ignore: use_build_context_synchronously
+      UiUtils.showAlertDialog("OK", "Exception", s.toString());
+    }
+    return result;
   }
 }
