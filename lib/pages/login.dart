@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:room_booking_app/app.dart';
+import 'package:room_booking_app/models/user_profile.dart';
+import 'package:room_booking_app/pages/room_booking.dart';
+import 'package:room_booking_app/utilities/crypto_utils.dart';
+import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'sign_up.dart';
 
 class LoginPage extends StatefulWidget {
@@ -50,9 +56,10 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void clearFields() {
+  void _clearFields() {
     emailController.clear();
     passwordController.clear();
+    _passwordVisible = false;
     setState(() {});
   }
 
@@ -154,19 +161,25 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 3,
-                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5,
+                    minimumSize: Size(MediaQuery.of(context).size.width,
                         MediaQuery.of(context).size.height * 0.05),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
-                      clearFields();
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => const HomePage()),
-                      // );
+                      var result = await _login(context.mounted);
+                      if (context.mounted) {
+                        if (result) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RoomBookingPage()),
+                          );
+                        } else {
+                          UiUtils.showAlertDialog(
+                              "OK", "Error", "Invalid username or password.");
+                        }
+                      }
                     }
                   },
                   child: const Padding(
@@ -198,5 +211,29 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<bool> _login([bool mounted = true]) async {
+    UiUtils.loadingSpinner();
+    var result = await _loginLogic();
+    if (!mounted) return false;
+    Navigator.of(context).pop();
+    _clearFields();
+    return result;
+  }
+
+  Future<bool> _loginLogic() async {
+    var result = false;
+    var email = emailController.text.trim().toLowerCase();
+    var password = CryptoUtils.encrypt(email, passwordController.text);
+    var profiles = HashSet<DbUserProfile>.from(
+        await userProfileProvider.onProfiles().first);
+    var profile = profiles.where((item) =>
+        item.username.value?.toLowerCase() == email &&
+        item.password.value == password);
+    if (profile.length == 1) {
+      result = true;
+    }
+    return result;
   }
 }
