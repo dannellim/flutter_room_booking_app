@@ -73,7 +73,7 @@ class UserProfileProvider {
 
   Stream<List<DbUserProfile>> onProfiles() {
     return profilesStore
-        .query(finder: Finder(sortOrders: [SortOrder('bookedDate', false)]))
+        .query(finder: Finder(sortOrders: [SortOrder('createdDt', false)]))
         .onSnapshots(db!)
         .transform(bookingsTransformer);
   }
