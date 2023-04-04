@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:room_booking_app/behaviors/no_scroll_behavior.dart';
 import 'package:room_booking_app/pages/login.dart';
+import 'package:room_booking_app/services/nav_service.dart';
 
 import 'app.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NavigationService.navigatorKey,
       scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Flutter Room Booking App',
       theme: ThemeData(
