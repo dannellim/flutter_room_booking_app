@@ -149,7 +149,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
-        drawer: const NavDrawer(),
+        drawer: NavDrawer(profileId: widget.profileId),
         appBar: AppBar(
           title: const Text('Home'),
         ),

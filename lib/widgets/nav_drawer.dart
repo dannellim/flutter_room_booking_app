@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:room_booking_app/pages/user_profile.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({super.key});
+  final int profileId;
+  const NavDrawer({super.key, required this.profileId});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +23,11 @@ class NavDrawer extends StatelessWidget {
             leading: const Icon(Icons.account_circle),
             title: const Text('Profile'),
             onTap: () => {
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => const TableEventsExample()),
-              // )
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfilePage(profileId: profileId)),
+              )
             },
           ),
           ListTile(
