@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:room_booking_app/app.dart';
 import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/pages/room_booking.dart';
+import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/utilities/crypto_utils.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
@@ -87,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               margin:
                   const EdgeInsets.only(top: 0, left: 32, right: 32, bottom: 0),
               child: TextFormField(
+                onFieldSubmitted: (value) => _login(),
                 controller: emailController,
                 // The validator receives the text that the user has entered.
                 validator: (value) {
@@ -117,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(
                   top: 16, left: 32, right: 32, bottom: 0),
               child: TextFormField(
+                onFieldSubmitted: (value) => _login(),
                 controller: passwordController,
                 obscureText: !_passwordVisible,
                 // The validator receives the text that the user has entered.
@@ -165,25 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                         MediaQuery.of(context).size.height * 0.05),
                   ),
                   onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      var result = await _login(context.mounted);
-                      if (context.mounted) {
-                        if (result > 0) {
-                          //var profile = userProfileProvider.onProfile(id)
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RoomBookingPage(
-                                      profileId: result,
-                                    )),
-                          );
-                        } else {
-                          UiUtils.showAlertDialog(
-                              "OK", "Error", "Invalid username or password.");
-                        }
-                      }
-                    }
+                    _login();
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(16),
@@ -216,13 +201,24 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<int> _login([bool mounted = true]) async {
-    UiUtils.loadingSpinner();
-    var result = await _loginLogic();
-    if (!mounted) return -1;
-    Navigator.of(context).pop();
-    _clearFields();
-    return result;
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      UiUtils.loadingSpinner();
+      var result = await _loginLogic();
+      _clearFields();
+      if (result > 0) {
+        Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+        Navigator.push(
+          NavigationService.navigatorKey.currentContext!,
+          MaterialPageRoute(
+              builder: (context) => RoomBookingPage(
+                    profileId: result,
+                  )),
+        );
+      } else {
+        UiUtils.showAlertDialog("OK", "Error", "Invalid username or password.");
+      }
+    }
   }
 
   Future<int> _loginLogic() async {
