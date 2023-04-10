@@ -59,13 +59,13 @@ class UserProfileProvider {
     }
   }
 
-  var bookingsTransformer = StreamTransformer<
+  final _profilesTransformer = StreamTransformer<
       List<RecordSnapshot<int, Map<String, Object?>>>,
       List<DbUserProfile>>.fromHandlers(handleData: (snapshotList, sink) {
     sink.add(DbUserProfiles(snapshotList));
   });
 
-  var bookingTransformer = StreamTransformer<
+  final _profileTransformer = StreamTransformer<
       RecordSnapshot<int, Map<String, Object?>>?,
       DbUserProfile?>.fromHandlers(handleData: (snapshot, sink) {
     sink.add(snapshot == null ? null : snapshotToProfile(snapshot));
@@ -75,7 +75,7 @@ class UserProfileProvider {
     return profilesStore
         .query(finder: Finder(sortOrders: [SortOrder('createdDt', false)]))
         .onSnapshots(db!)
-        .transform(bookingsTransformer);
+        .transform(_profilesTransformer);
   }
 
   /// Listed for changes on a given rm booking
@@ -83,7 +83,7 @@ class UserProfileProvider {
     return profilesStore
         .record(id)
         .onSnapshot(db!)
-        .transform(bookingTransformer);
+        .transform(_profileTransformer);
   }
 
   Future clearAllProfiles() async {
