@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/rm_booking.dart';
+import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/cal_utils.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
@@ -12,7 +13,8 @@ import '../app.dart';
 
 // Define a custom Form widget.
 class RoomBookingPage extends StatefulWidget {
-  const RoomBookingPage({super.key});
+  final int profileId;
+  const RoomBookingPage({super.key, required this.profileId});
 
   @override
   RoomBookingPageState createState() {
@@ -53,6 +55,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   void initState() {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(List.empty());
+
     super.initState();
   }
 
@@ -111,12 +114,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
     ];
   }
 
-  static const List<String> roomList = TestData.roomList;
-  String roomDropdownValue = roomList.first;
-
-  static const List<String> reasonList = TestData.reasonList;
-  String reasonDropdownValue = reasonList.first;
-
   Future<List<DbRmBooking>> _getEventsForDay(DateTime day) async {
     //main source of data
     // Implementation example
@@ -134,6 +131,12 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             .contains(DateFormat("yyyy-MM-dd").format(day)))
         .toList();
   }
+
+  static const List<String> roomList = TestData.roomList;
+  String roomDropdownValue = roomList.first;
+
+  static const List<String> reasonList = TestData.reasonList;
+  String reasonDropdownValue = reasonList.first;
 
   List<DbRmBooking> _bookings = List.empty();
   bool _isNotRecurring = true;
@@ -808,12 +811,10 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                               return;
                                                             }
                                                             await _saveRoomBooking();
-                                                            if (context
-                                                                .mounted) {
-                                                              return;
-                                                            }
                                                             Navigator.pop(
-                                                                context);
+                                                                NavigationService
+                                                                    .navigatorKey
+                                                                    .currentContext!);
                                                           },
                                                           child: const Padding(
                                                             padding:
@@ -1005,15 +1006,15 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             }));
   }
 
-  _saveRoomBooking([bool mounted = true]) async {
+  _saveRoomBooking() async {
     UiUtils.loadingSpinner();
     await _bookingLogic();
-    if (!mounted) return;
-    Navigator.of(context).pop();
+    Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
     _clearEverything();
   }
 
   _bookingLogic() async {
+    var profile = await userProfileProvider.onProfile(widget.profileId).first;
     if (_isNotRecurring) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
         var days = daysInRange(_rangeStart!, _rangeEnd!);
@@ -1021,22 +1022,28 @@ class RoomBookingPageState extends State<RoomBookingPage> {
           await dbRmBookingProvider.saveRmBooking(DbRmBooking()
             ..id = DateTime.now().millisecondsSinceEpoch
             ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-            ..startTime.v = _timeStart.format(context)
+            ..startTime.v = _timeStart
+                .format(NavigationService.navigatorKey.currentContext!)
             ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-            ..endTime.v = _timeEnd.format(context)
+            ..endTime.v =
+                _timeEnd.format(NavigationService.navigatorKey.currentContext!)
             ..room.v = roomDropdownValue
             ..reason.v = reasonDropdownValue
+            ..bookedBy.v = profile?.getName()
             ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
         }
       } else {
         await dbRmBookingProvider.saveRmBooking(DbRmBooking()
           ..id = DateTime.now().millisecondsSinceEpoch
           ..startDate.v = DateFormat("yyyy-MM-dd").format(_rangeStart!)
-          ..startTime.v = _timeStart.format(context)
+          ..startTime.v =
+              _timeStart.format(NavigationService.navigatorKey.currentContext!)
           ..endDate.v = DateFormat("yyyy-MM-dd").format(_rangeEnd!)
-          ..endTime.v = _timeEnd.format(context)
+          ..endTime.v =
+              _timeEnd.format(NavigationService.navigatorKey.currentContext!)
           ..room.v = roomDropdownValue
           ..reason.v = reasonDropdownValue
+          ..bookedBy.v = profile?.getName()
           ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
       }
     } else if (_isRecurringDaily) {
@@ -1049,11 +1056,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
           await dbRmBookingProvider.saveRmBooking(DbRmBooking()
             ..id = DateTime.now().millisecondsSinceEpoch
             ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-            ..startTime.v = _timeStart.format(context)
+            ..startTime.v = _timeStart
+                .format(NavigationService.navigatorKey.currentContext!)
             ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-            ..endTime.v = _timeEnd.format(context)
+            ..endTime.v =
+                _timeEnd.format(NavigationService.navigatorKey.currentContext!)
             ..room.v = roomDropdownValue
             ..reason.v = reasonDropdownValue
+            ..bookedBy.v = profile?.getName()
             ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
         }
       }
@@ -1071,11 +1081,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               await dbRmBookingProvider.saveRmBooking(DbRmBooking()
                 ..id = DateTime.now().millisecondsSinceEpoch
                 ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..startTime.v = _timeStart.format(context)
+                ..startTime.v = _timeStart
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..endTime.v = _timeEnd.format(context)
+                ..endTime.v = _timeEnd
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
+                ..bookedBy.v = profile?.getName()
                 ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
             }
           }
@@ -1089,11 +1102,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             await dbRmBookingProvider.saveRmBooking(DbRmBooking()
               ..id = DateTime.now().millisecondsSinceEpoch
               ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..startTime.v = _timeStart.format(context)
+              ..startTime.v = _timeStart
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..endTime.v = _timeEnd.format(context)
+              ..endTime.v = _timeEnd
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
+              ..bookedBy.v = profile?.getName()
               ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
           }
         }
@@ -1110,11 +1126,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               await dbRmBookingProvider.saveRmBooking(DbRmBooking()
                 ..id = DateTime.now().millisecondsSinceEpoch
                 ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..startTime.v = _timeStart.format(context)
+                ..startTime.v = _timeStart
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..endTime.v = _timeEnd.format(context)
+                ..endTime.v = _timeEnd
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
+                ..bookedBy.v = profile?.getName()
                 ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
             }
           }
@@ -1127,11 +1146,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             await dbRmBookingProvider.saveRmBooking(DbRmBooking()
               ..id = DateTime.now().millisecondsSinceEpoch
               ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..startTime.v = _timeStart.format(context)
+              ..startTime.v = _timeStart
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..endTime.v = _timeEnd.format(context)
+              ..endTime.v = _timeEnd
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
+              ..bookedBy.v = profile?.getName()
               ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
           }
         }
@@ -1152,11 +1174,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               await dbRmBookingProvider.saveRmBooking(DbRmBooking()
                 ..id = DateTime.now().millisecondsSinceEpoch
                 ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..startTime.v = _timeStart.format(context)
+                ..startTime.v = _timeStart
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-                ..endTime.v = _timeEnd.format(context)
+                ..endTime.v = _timeEnd
+                    .format(NavigationService.navigatorKey.currentContext!)
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
+                ..bookedBy.v = profile?.getName()
                 ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
             }
           }
@@ -1171,11 +1196,14 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             await dbRmBookingProvider.saveRmBooking(DbRmBooking()
               ..id = DateTime.now().millisecondsSinceEpoch
               ..startDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..startTime.v = _timeStart.format(context)
+              ..startTime.v = _timeStart
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..endDate.v = DateFormat("yyyy-MM-dd").format(day)
-              ..endTime.v = _timeEnd.format(context)
+              ..endTime.v = _timeEnd
+                  .format(NavigationService.navigatorKey.currentContext!)
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
+              ..bookedBy.v = profile?.getName()
               ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
           }
         }

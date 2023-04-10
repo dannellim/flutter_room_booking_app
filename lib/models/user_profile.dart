@@ -43,4 +43,8 @@ class DbUserProfile extends DbRecord {
 
   @override
   String toString() => jsonEncode(this);
+
+  String getName() {
+    return "${firstName.v} ${lastName.v}";
+  }
 }
