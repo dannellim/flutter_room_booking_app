@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:room_booking_app/widgets/nav_drawer.dart';
+//import 'package:room_booking_app/widgets/nav_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Home"),
       ),
-      drawer: const NavDrawer(),
+      //drawer: const NavDrawer(),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
