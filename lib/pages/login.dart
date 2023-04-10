@@ -169,11 +169,14 @@ class _LoginPageState extends State<LoginPage> {
                     if (_formKey.currentState!.validate()) {
                       var result = await _login(context.mounted);
                       if (context.mounted) {
-                        if (result) {
+                        if (result > 0) {
+                          //var profile = userProfileProvider.onProfile(id)
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RoomBookingPage()),
+                                builder: (context) => RoomBookingPage(
+                                      profileId: result,
+                                    )),
                           );
                         } else {
                           UiUtils.showAlertDialog(
@@ -213,17 +216,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<bool> _login([bool mounted = true]) async {
+  Future<int> _login([bool mounted = true]) async {
     UiUtils.loadingSpinner();
     var result = await _loginLogic();
-    if (!mounted) return false;
+    if (!mounted) return -1;
     Navigator.of(context).pop();
     _clearFields();
     return result;
   }
 
-  Future<bool> _loginLogic() async {
-    var result = false;
+  Future<int> _loginLogic() async {
+    var result = -1;
     var email = emailController.text.trim().toLowerCase();
     var password = CryptoUtils.encrypt(email, passwordController.text);
     var profiles = HashSet<DbUserProfile>.from(
@@ -232,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
         item.username.value?.toLowerCase() == email &&
         item.password.value == password);
     if (profile.length == 1) {
-      result = true;
+      result = profile.first.id!;
     }
     return result;
   }
