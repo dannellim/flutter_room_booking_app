@@ -57,13 +57,13 @@ class DbRmBookingProvider {
     }
   }
 
-  var bookingsTransformer = StreamTransformer<
+  final _bookingsTransformer = StreamTransformer<
       List<RecordSnapshot<int, Map<String, Object?>>>,
       List<DbRmBooking>>.fromHandlers(handleData: (snapshotList, sink) {
     sink.add(DbRmBookings(snapshotList));
   });
 
-  var bookingTransformer = StreamTransformer<
+  final _bookingTransformer = StreamTransformer<
       RecordSnapshot<int, Map<String, Object?>>?,
       DbRmBooking?>.fromHandlers(handleData: (snapshot, sink) {
     sink.add(snapshot == null ? null : snapshotToBooking(snapshot));
@@ -73,7 +73,7 @@ class DbRmBookingProvider {
     return bookingsStore
         .query(finder: Finder(sortOrders: [SortOrder('bookedDate', false)]))
         .onSnapshots(db!)
-        .transform(bookingsTransformer);
+        .transform(_bookingsTransformer);
   }
 
   /// Listed for changes on a given rm booking
@@ -81,7 +81,7 @@ class DbRmBookingProvider {
     return bookingsStore
         .record(id)
         .onSnapshot(db!)
-        .transform(bookingTransformer);
+        .transform(_bookingTransformer);
   }
 
   Future clearAllRoomBookings() async {
