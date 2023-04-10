@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 
 class UiUtils {
-  static void showAlertDialog(String btnText, String title, String message) {
+  static void showAlertDialog(String title, String message,
+      [String btnText = "OK"]) {
     // set up the button
     Widget okButton = TextButton(
       child: Text(btnText),

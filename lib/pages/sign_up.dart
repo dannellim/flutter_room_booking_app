@@ -478,14 +478,14 @@ class SignupPageState extends State<SignUpPage> {
                         if (context.mounted) {
                           if (result == saveExists) {
                             UiUtils.showAlertDialog(
-                                "OK", "Error", "This email is already in use.");
+                                "Error", "This email is already in use.");
                           } else if (result == saveSuccess) {
                             Navigator.of(context)
                                 .popUntil((route) => route.isFirst);
-                            UiUtils.showAlertDialog("OK", "Success",
+                            UiUtils.showAlertDialog("Success",
                                 "Your account has been successfully created!");
                           } else {
-                            UiUtils.showAlertDialog("OK", "Error",
+                            UiUtils.showAlertDialog("Error",
                                 "Unable to create account. Please contact the helpdesk for more information.");
                           }
                         }
@@ -543,7 +543,7 @@ class SignupPageState extends State<SignUpPage> {
       result = saveSuccess;
     } on Exception catch (e, s) {
       // ignore: use_build_context_synchronously
-      UiUtils.showAlertDialog("OK", "Exception", s.toString());
+      UiUtils.showAlertDialog("Exception", s.toString());
     }
     return result;
   }

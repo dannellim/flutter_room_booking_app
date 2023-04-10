@@ -211,7 +211,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                       RangeSelectionMode.toggledOn &&
                                   _rangeEnd == null) {
                                 UiUtils.showAlertDialog(
-                                    "OK",
                                     "End date not selected!",
                                     "Please click an end date for your range selection");
                                 return;
@@ -805,7 +804,6 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                                 _isRecurringYearly ==
                                                                     false) {
                                                               UiUtils.showAlertDialog(
-                                                                  "OK",
                                                                   "No booking type selected",
                                                                   "Please select at least one booking recurring type.");
                                                               return;
@@ -1048,7 +1046,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
       }
     } else if (_isRecurringDaily) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
-        UiUtils.showAlertDialog("OK", "Daily recurring uavailable",
+        UiUtils.showAlertDialog("Daily recurring uavailable",
             "Daily recurring booking is unavailable for date ranges.");
       } else {
         var days = daysInRange(_rangeStart!, lastDayOfCurrentYear());
