@@ -1223,6 +1223,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
       _rangeSelectionMode = RangeSelectionMode.toggledOff;
       _selectedDays.clear();
       _selectedEvents.value = [];
+      reasonDropdownValue = reasonList.first;
+      roomDropdownValue = roomList.first;
     });
   }
 }
