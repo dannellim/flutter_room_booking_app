@@ -23,18 +23,19 @@ class NavDrawer extends StatelessWidget {
             leading: const Icon(Icons.account_circle),
             title: const Text('Profile'),
             onTap: () => {
+              Navigator.of(context).pop(),
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ProfilePage(profileId: profileId)),
-              )
+              ),
             },
           ),
           ListTile(
             leading: const Icon(Icons.book_online_rounded),
             title: const Text('Book a room'),
             onTap: () => {
-              //Navigator.of(context).pop(),
+              Navigator.of(context).pop(),
               // Navigator.pushReplacement(
               //   context,
               //   MaterialPageRoute(
