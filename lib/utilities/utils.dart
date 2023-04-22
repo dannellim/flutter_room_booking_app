@@ -1,4 +1,14 @@
 class Utils {
+  static bool isSimpleStringsSame(String one, String two) {
+    var first = one.toLowerCase().replaceAll(RegExp(r"\s+"), "");
+    var second = two.toLowerCase().replaceAll(RegExp(r"\s+"), "");
+    if (first.compareTo(second) == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static bool isEmailValid(String email) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}")

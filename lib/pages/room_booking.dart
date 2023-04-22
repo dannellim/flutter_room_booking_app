@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/rm_booking.dart';
+import 'package:room_booking_app/pages/booking_details.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/cal_utils.dart';
@@ -938,8 +939,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                 width: double.infinity,
                 child: TextButton(
                   child: const Text('EDIT', style: TextStyle(fontSize: 16)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await _editBooking(booking);
                   },
                 ),
               ),
@@ -983,6 +985,16 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             ],
           );
         });
+  }
+
+  Future<void> _editBooking(DbRmBooking booking) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => EditBookingPage(
+                initialBooking: booking,
+              )),
+    );
   }
 
   Future<void> _deleteRoomBooking(DbRmBooking booking) async {
