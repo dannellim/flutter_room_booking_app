@@ -859,137 +859,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                     child: ListTile(
-                                      onTap: () => {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              Text bookingText = Text.rich(
-                                                TextSpan(
-                                                  // with no TextStyle it will have default text style
-                                                  text: '',
-                                                  children: <TextSpan>[
-                                                    const TextSpan(
-                                                        text: 'Code: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].code.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nStart Date: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].startDate.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nStart Time: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].startTime.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nEnd Date: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].endDate.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nEnd Time: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].endTime.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nRoom: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].room.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nReason: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].reason.v}\n"),
-                                                    const TextSpan(
-                                                        text: '\nBooked By: ',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text:
-                                                            "${value[index].bookedBy.v}\n"),
-                                                    const TextSpan(
-                                                        text:
-                                                            '\nDate & Time of Booking:\n\n',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    TextSpan(
-                                                        text: DateFormat(
-                                                                "dd MMM yyyy hh:mm a")
-                                                            .format(DateTime
-                                                                .fromMillisecondsSinceEpoch(value[
-                                                                        index]
-                                                                    .bookedDate
-                                                                    .valueOrThrow))),
-                                                  ],
-                                                ),
-                                              );
-
-                                              // String bookingDetails =
-                                              //     "Code: ${value[index].code}\nStart Date: ${value[index].startDate}\nStart Time: ${value[index].startTime}\nEnd Date: ${value[index].endDate}\nEnd Time: ${value[index].endTime}\nRoom: ${value[index].room}\nReason: ${value[index].reason}\nBooked By: ${value[index].bookedBy}\nBooked Time: ${value[index].bookedTime}\n";
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    "Booking Details"),
-                                                titleTextStyle: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                    fontSize: 16),
-                                                content: bookingText,
-                                                actions: [
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      elevation: 3,
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Padding(
-                                                      padding:
-                                                          EdgeInsets.all(8),
-                                                      child: Text('OK',
-                                                          style: TextStyle(
-                                                              fontSize: 16)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            })
-                                      },
+                                      onTap: () =>
+                                          {_roomBookingDetails(value[index])},
                                       title: Text(value[index].toSummary()),
                                     ),
                                   );
@@ -1002,6 +873,93 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                     ),
                   ));
             }));
+  }
+
+  _roomBookingDetails(DbRmBooking booking) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          Text bookingText = Text.rich(
+            TextSpan(
+              // with no TextStyle it will have default text style
+              text: '',
+              children: <TextSpan>[
+                const TextSpan(
+                    text: 'Code: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.code.v}\n"),
+                const TextSpan(
+                    text: '\nStart Date: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.startDate.v}\n"),
+                const TextSpan(
+                    text: '\nStart Time: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.startTime.v}\n"),
+                const TextSpan(
+                    text: '\nEnd Date: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.endDate.v}\n"),
+                const TextSpan(
+                    text: '\nEnd Time: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.endTime.v}\n"),
+                const TextSpan(
+                    text: '\nRoom: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.room.v}\n"),
+                const TextSpan(
+                    text: '\nReason: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.reason.v}\n"),
+                const TextSpan(
+                    text: '\nBooked By: ',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: "${booking.bookedBy.v}\n"),
+                const TextSpan(
+                    text: '\nDate & Time of Booking:\n\n',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: DateFormat("dd MMM yyyy hh:mm a").format(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            booking.bookedDate.valueOrThrow))),
+              ],
+            ),
+          );
+          return AlertDialog(
+            title: const Text("Booking Details"),
+            titleTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+            content: bookingText,
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  elevation: 3,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text('DEL', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 3,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text('OK', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   _saveRoomBooking() async {
