@@ -930,36 +930,94 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             title: const Text("Booking Details"),
             titleTextStyle: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
-            content: bookingText,
+            content: SingleChildScrollView(
+              child: bookingText,
+            ),
             actions: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  elevation: 3,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text('DEL', style: TextStyle(fontSize: 16)),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  child: const Text('EDIT', style: TextStyle(fontSize: 16)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 3,
+              const SizedBox(
+                height: 8,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 3,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text('OK', style: TextStyle(fontSize: 16)),
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text('OK', style: TextStyle(fontSize: 16)),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    elevation: 3,
+                  ),
+                  onPressed: () async {
+                    await _deleteRoomBooking(booking);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text('DEL', style: TextStyle(fontSize: 16)),
+                  ),
                 ),
               ),
             ],
           );
         });
+  }
+
+  Future<void> _deleteRoomBooking(DbRmBooking booking) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Room Booking'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Do you wish to delete this room booking?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No', style: TextStyle(fontSize: 16)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes', style: TextStyle(fontSize: 16)),
+              onPressed: () async {
+                await dbRmBookingProvider.deleteRmBooking(booking.id);
+                Navigator.pop(NavigationService.navigatorKey.currentContext!);
+                Navigator.pop(NavigationService.navigatorKey.currentContext!);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   _saveRoomBooking() async {
