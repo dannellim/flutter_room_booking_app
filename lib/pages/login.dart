@@ -206,8 +206,9 @@ class _LoginPageState extends State<LoginPage> {
       UiUtils.loadingSpinner();
       var result = await _loginLogic();
       _clearFields();
+      Navigator.of(NavigationService.navigatorKey.currentContext!)
+          .pop(); //close spinner
       if (result > 0) {
-        Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
         Navigator.push(
           NavigationService.navigatorKey.currentContext!,
           MaterialPageRoute(
@@ -216,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                   )),
         );
       } else {
-        UiUtils.showAlertDialog("OK", "Error", "Invalid username or password.");
+        UiUtils.showAlertDialog("Error", "Invalid username or password.");
       }
     }
   }
