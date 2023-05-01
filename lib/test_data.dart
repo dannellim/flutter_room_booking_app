@@ -1,20 +1,19 @@
 class TestData {
-  static const List<String> serviceList = <String>[
+  static List<String> serviceList = <String>[
     'Chinese Congregation',
     'Mustard Seed Service (Youth)',
     'Saturday Praise Service',
     'Sunday Worship Service',
-  ];
-  String serviceDropdownValue = serviceList.first;
+  ].map((x) => x.toUpperCase()).toList();
 
-  static const List<String> cellList = <String>[
+  static List<String> cellList = <String>[
     'Cell One',
     'Cell Two',
     'Cell Three',
     'Cell Four',
-  ];
+  ].map((x) => x.toUpperCase()).toList();
 
-  static const List<String> roomList = <String>[
+  static List<String> roomList = <String>[
     '#01-01',
     '#01-02',
     '#01-03',
@@ -27,12 +26,12 @@ class TestData {
     '#03-02',
     '#03-03',
     'Lounge',
-  ];
+  ].map((x) => x.toUpperCase()).toList();
 
-  static const List<String> reasonList = <String>[
+  static List<String> reasonList = <String>[
     'Cell',
     'Music Practice',
     'Service',
     'Camp',
-  ];
+  ].map((x) => x.toUpperCase()).toList();
 }

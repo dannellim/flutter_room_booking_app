@@ -50,11 +50,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return null;
   }
 
-  static const List<String> serviceList = TestData.serviceList;
-  String _serviceDropdownValue = serviceList.first;
-
-  static const List<String> cellList = TestData.cellList;
-  String _cellDropdownValue = cellList.first;
+  String _serviceDropdownValue = TestData.serviceList.first;
+  String _cellDropdownValue = TestData.cellList.first;
 
   @override
   void initState() {
@@ -208,7 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 _serviceDropdownValue = value!;
                               });
                             },
-                            items: serviceList
+                            items: TestData.serviceList
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -233,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 _cellDropdownValue = value!;
                               });
                             },
-                            items: cellList
+                            items: TestData.cellList
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -326,14 +323,14 @@ class _ProfilePageState extends State<ProfilePage> {
     _emailController.selection = _emailController.selection.copyWith(
         baseOffset: _profile.email.v!.length,
         extentOffset: _profile.email.v!.length);
-    for (var item in serviceList) {
+    for (var item in TestData.serviceList) {
       if (item.toUpperCase().compareTo(_profile.service.v!.toUpperCase()) ==
           0) {
         _serviceDropdownValue = item;
         break;
       }
     }
-    for (var item in cellList) {
+    for (var item in TestData.cellList) {
       if (item.toUpperCase().compareTo(_profile.cell.v!.toUpperCase()) == 0) {
         _cellDropdownValue = item;
         break;

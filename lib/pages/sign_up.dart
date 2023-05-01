@@ -89,11 +89,9 @@ class SignupPageState extends State<SignUpPage> {
     _numVaild = false;
   }
 
-  static const List<String> serviceList = TestData.serviceList;
-  String _serviceDropdownValue = serviceList.first;
+  String _serviceDropdownValue = TestData.serviceList.first;
 
-  static const List<String> cellList = TestData.cellList;
-  String _cellDropdownValue = cellList.first;
+  String _cellDropdownValue = TestData.cellList.first;
 
   bool _is8Character = false;
   bool _is1Upper = false;
@@ -254,8 +252,8 @@ class SignupPageState extends State<SignUpPage> {
                       _serviceDropdownValue = value!;
                     });
                   },
-                  items:
-                      serviceList.map<DropdownMenuItem<String>>((String value) {
+                  items: TestData.serviceList
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -280,7 +278,8 @@ class SignupPageState extends State<SignUpPage> {
                       _cellDropdownValue = value!;
                     });
                   },
-                  items: cellList.map<DropdownMenuItem<String>>((String value) {
+                  items: TestData.cellList
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -538,7 +537,7 @@ class SignupPageState extends State<SignUpPage> {
         ..handphoneNumber.v = _numController.text.trim()
         ..service.v = _serviceDropdownValue.trim().toUpperCase()
         ..cell.v = _cellDropdownValue.trim().toUpperCase()
-        ..isAdmin.v = false
+        ..isAdmin.v = true
         ..createdDt.v = DateTime.now().millisecondsSinceEpoch
         ..updatedDt.v = DateTime.now().millisecondsSinceEpoch);
       result = saveSuccess;

@@ -17,11 +17,8 @@ class EditBookingPage extends StatefulWidget {
 class _EditBookingPageState extends State<EditBookingPage> {
   //final _formKey = GlobalKey<FormState>();
   //int? get _bookingId => widget.initialBooking?.id;
-  static const List<String> _roomList = TestData.roomList;
-  String _roomDropdownValue = _roomList.first;
-
-  static const List<String> _reasonList = TestData.reasonList;
-  String _reasonDropdownValue = _reasonList.first;
+  String _roomDropdownValue = TestData.roomList.first;
+  String _reasonDropdownValue = TestData.reasonList.first;
 
   @override
   void initState() {
@@ -109,8 +106,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       _roomDropdownValue = value!;
                     });
                   },
-                  items:
-                      _roomList.map<DropdownMenuItem<String>>((String value) {
+                  items: TestData.roomList
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -135,8 +132,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       _reasonDropdownValue = value!;
                     });
                   },
-                  items:
-                      _reasonList.map<DropdownMenuItem<String>>((String value) {
+                  items: TestData.reasonList
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -177,14 +174,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
   }
 
   void _initFormFields() {
-    for (var item in _roomList) {
+    for (var item in TestData.roomList) {
       if (Utils.isSimpleStringsSame(
           item, widget.initialBooking?.room.v ?? "")) {
         _roomDropdownValue = item;
         break;
       }
     }
-    for (var item in _reasonList) {
+    for (var item in TestData.reasonList) {
       if (Utils.isSimpleStringsSame(
           item, widget.initialBooking?.reason.v ?? "")) {
         _reasonDropdownValue = item;

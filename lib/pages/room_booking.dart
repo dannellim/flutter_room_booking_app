@@ -135,11 +135,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
         .toList();
   }
 
-  static const List<String> roomList = TestData.roomList;
-  String roomDropdownValue = roomList.first;
-
-  static const List<String> reasonList = TestData.reasonList;
-  String reasonDropdownValue = reasonList.first;
+  String roomDropdownValue = TestData.roomList.first;
+  String reasonDropdownValue = TestData.reasonList.first;
 
   List<DbRmBooking> _bookings = List.empty();
   bool _isNotRecurring = true;
@@ -534,7 +531,7 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                                 value!;
                                                           });
                                                         },
-                                                        items: roomList.map<
+                                                        items: TestData.roomList.map<
                                                             DropdownMenuItem<
                                                                 String>>((String
                                                             value) {
@@ -575,10 +572,12 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                                                                 value!;
                                                           });
                                                         },
-                                                        items: reasonList.map<
-                                                            DropdownMenuItem<
-                                                                String>>((String
-                                                            value) {
+                                                        items: TestData
+                                                            .reasonList
+                                                            .map<
+                                                                DropdownMenuItem<
+                                                                    String>>((String
+                                                                value) {
                                                           return DropdownMenuItem<
                                                               String>(
                                                             value: value,
@@ -1256,8 +1255,8 @@ class RoomBookingPageState extends State<RoomBookingPage> {
       _rangeSelectionMode = RangeSelectionMode.toggledOff;
       _selectedDays.clear();
       _selectedEvents.value = [];
-      reasonDropdownValue = reasonList.first;
-      roomDropdownValue = roomList.first;
+      reasonDropdownValue = TestData.reasonList.first;
+      roomDropdownValue = TestData.roomList.first;
     });
   }
 }
