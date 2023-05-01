@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:room_booking_app/pages/admin.dart';
 import 'package:room_booking_app/pages/user_profile.dart';
 
 class NavDrawer extends StatelessWidget {
   final int profileId;
-  const NavDrawer({super.key, required this.profileId});
+  final bool isAdmin;
+  const NavDrawer({super.key, required this.profileId, required this.isAdmin});
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,19 @@ class NavDrawer extends StatelessWidget {
             leading: const Icon(Icons.feedback),
             title: const Text('Feedback'),
             onTap: () => {Navigator.of(context).pop()},
+          ),
+          Visibility(
+            visible: isAdmin,
+            child: ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Admin'),
+              onTap: () => {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminPage()),
+                )
+              },
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),

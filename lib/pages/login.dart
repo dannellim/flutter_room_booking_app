@@ -208,12 +208,13 @@ class _LoginPageState extends State<LoginPage> {
       _clearFields();
       Navigator.of(NavigationService.navigatorKey.currentContext!)
           .pop(); //close spinner
-      if (result > 0) {
+      if (result != null) {
         Navigator.push(
           NavigationService.navigatorKey.currentContext!,
           MaterialPageRoute(
               builder: (context) => RoomBookingPage(
-                    profileId: result,
+                    profileId: result.id!,
+                    isAdmin: result.isAdmin.v!,
                   )),
         );
       } else {
@@ -222,8 +223,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<int> _loginLogic() async {
-    var result = -1;
+  Future<DbUserProfile?> _loginLogic() async {
+    DbUserProfile? result;
     var email = emailController.text.trim().toLowerCase();
     var password = CryptoUtils.encrypt(email, passwordController.text);
     var profiles = HashSet<DbUserProfile>.from(
@@ -232,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
         item.username.value?.toLowerCase() == email &&
         item.password.value == password);
     if (profile.length == 1) {
-      result = profile.first.id!;
+      result = profile.first;
     }
     return result;
   }

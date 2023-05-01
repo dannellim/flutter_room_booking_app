@@ -15,7 +15,9 @@ import '../app.dart';
 // Define a custom Form widget.
 class RoomBookingPage extends StatefulWidget {
   final int profileId;
-  const RoomBookingPage({super.key, required this.profileId});
+  final bool isAdmin;
+  const RoomBookingPage(
+      {super.key, required this.profileId, required this.isAdmin});
 
   @override
   RoomBookingPageState createState() {
@@ -150,7 +152,10 @@ class RoomBookingPageState extends State<RoomBookingPage> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
-        drawer: NavDrawer(profileId: widget.profileId),
+        drawer: NavDrawer(
+          profileId: widget.profileId,
+          isAdmin: widget.isAdmin,
+        ),
         appBar: AppBar(
           title: const Text('Home'),
         ),
