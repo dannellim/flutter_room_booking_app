@@ -3,32 +3,32 @@ import 'package:tekartik_app_flutter_sembast/sembast.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class UserProfileProvider {
-  static const String dbName = 'user_profile.db';
-  static const int kVersion1 = 1;
-  static const String userProfileStoreName = 'user_profile';
-  final lock = Lock(reentrant: true);
-  final DatabaseFactory dbFactory;
-  Database? db;
+  static const String _dbName = 'user_profile.db';
+  static const int _kVersion1 = 1;
+  static const String _userProfileStoreName = 'user_profile';
+  final _lock = Lock(reentrant: true);
+  final DatabaseFactory _dbFactory;
+  Database? _db;
 
-  final profilesStore = intMapStoreFactory.store(userProfileStoreName);
+  final profilesStore = intMapStoreFactory.store(_userProfileStoreName);
 
-  UserProfileProvider(this.dbFactory);
+  UserProfileProvider(this._dbFactory);
 
   Future<Database> openPath(String path) async {
-    db = await dbFactory.openDatabase(path, version: kVersion1);
-    return db!;
+    _db = await _dbFactory.openDatabase(path, version: _kVersion1);
+    return _db!;
   }
 
   Future<Database> get ready async =>
-      db ??= await lock.synchronized<Database>(() async {
-        if (db == null) {
+      _db ??= await _lock.synchronized<Database>(() async {
+        if (_db == null) {
           await open();
         }
-        return db!;
+        return _db!;
       });
 
   Future<DbUserProfile?> getProfile(int id) async {
-    var map = await profilesStore.record(id).get(db!);
+    var map = await profilesStore.record(id).get(_db!);
     if (map != null) {
       return DbUserProfile()
         ..fromMap(map)
@@ -38,7 +38,7 @@ class UserProfileProvider {
   }
 
   Future<Database> open() async {
-    return await openPath(await fixPath(dbName));
+    return await openPath(await fixPath(_dbName));
   }
 
   Future<String> fixPath(String path) async => path;
@@ -47,15 +47,15 @@ class UserProfileProvider {
     if (dbUserProfile.id != null) {
       await profilesStore
           .record(dbUserProfile.id!)
-          .put(db!, dbUserProfile.toMap());
+          .put(_db!, dbUserProfile.toMap());
     } else {
-      dbUserProfile.id = await profilesStore.add(db!, dbUserProfile.toMap());
+      dbUserProfile.id = await profilesStore.add(_db!, dbUserProfile.toMap());
     }
   }
 
   Future deleteProfile(int? id) async {
     if (id != null) {
-      await profilesStore.record(id).delete(db!);
+      await profilesStore.record(id).delete(_db!);
     }
   }
 
@@ -74,7 +74,7 @@ class UserProfileProvider {
   Stream<List<DbUserProfile>> onProfiles() {
     return profilesStore
         .query(finder: Finder(sortOrders: [SortOrder('createdDt', false)]))
-        .onSnapshots(db!)
+        .onSnapshots(_db!)
         .transform(_profilesTransformer);
   }
 
@@ -82,21 +82,21 @@ class UserProfileProvider {
   Stream<DbUserProfile?> onProfile(int id) {
     return profilesStore
         .record(id)
-        .onSnapshot(db!)
+        .onSnapshot(_db!)
         .transform(_profileTransformer);
   }
 
   Future clearAllProfiles() async {
-    await profilesStore.delete(db!);
-    await getDatabaseFactory().deleteDatabase(db!.path);
+    await profilesStore.delete(_db!);
+    await getDatabaseFactory().deleteDatabase(_db!.path);
   }
 
   Future close() async {
-    await db!.close();
+    await _db!.close();
   }
 
   Future deleteDb() async {
-    await dbFactory.deleteDatabase(await fixPath(dbName));
+    await _dbFactory.deleteDatabase(await fixPath(_dbName));
   }
 }
 

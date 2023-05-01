@@ -3,32 +3,32 @@ import 'package:tekartik_app_flutter_sembast/sembast.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class DbRmBookingProvider {
-  static const String dbName = 'room_booking.db';
-  static const int kVersion1 = 1;
-  static const String rmBookingStoreName = 'room_booking';
-  final lock = Lock(reentrant: true);
-  final DatabaseFactory dbFactory;
-  Database? db;
+  static const String _dbName = 'room_booking.db';
+  static const int _kVersion1 = 1;
+  static const String _rmBookingStoreName = 'room_booking';
+  final _lock = Lock(reentrant: true);
+  final DatabaseFactory _dbFactory;
+  Database? _db;
 
-  final bookingsStore = intMapStoreFactory.store(rmBookingStoreName);
+  final _bookingsStore = intMapStoreFactory.store(_rmBookingStoreName);
 
-  DbRmBookingProvider(this.dbFactory);
+  DbRmBookingProvider(this._dbFactory);
 
   Future<Database> openPath(String path) async {
-    db = await dbFactory.openDatabase(path, version: kVersion1);
-    return db!;
+    _db = await _dbFactory.openDatabase(path, version: _kVersion1);
+    return _db!;
   }
 
   Future<Database> get ready async =>
-      db ??= await lock.synchronized<Database>(() async {
-        if (db == null) {
+      _db ??= await _lock.synchronized<Database>(() async {
+        if (_db == null) {
           await open();
         }
-        return db!;
+        return _db!;
       });
 
   Future<DbRmBooking?> getBooking(int id) async {
-    var map = await bookingsStore.record(id).get(db!);
+    var map = await _bookingsStore.record(id).get(_db!);
     if (map != null) {
       return DbRmBooking()
         ..fromMap(map)
@@ -38,22 +38,24 @@ class DbRmBookingProvider {
   }
 
   Future<Database> open() async {
-    return await openPath(await fixPath(dbName));
+    return await openPath(await fixPath(_dbName));
   }
 
   Future<String> fixPath(String path) async => path;
 
   Future saveRmBooking(DbRmBooking dbRmBooking) async {
     if (dbRmBooking.id != null) {
-      await bookingsStore.record(dbRmBooking.id!).put(db!, dbRmBooking.toMap());
+      await _bookingsStore
+          .record(dbRmBooking.id!)
+          .put(_db!, dbRmBooking.toMap());
     } else {
-      dbRmBooking.id = await bookingsStore.add(db!, dbRmBooking.toMap());
+      dbRmBooking.id = await _bookingsStore.add(_db!, dbRmBooking.toMap());
     }
   }
 
   Future deleteRmBooking(int? id) async {
     if (id != null) {
-      await bookingsStore.record(id).delete(db!);
+      await _bookingsStore.record(id).delete(_db!);
     }
   }
 
@@ -70,31 +72,31 @@ class DbRmBookingProvider {
   });
 
   Stream<List<DbRmBooking>> onRmBookings() {
-    return bookingsStore
+    return _bookingsStore
         .query(finder: Finder(sortOrders: [SortOrder('bookedDate', false)]))
-        .onSnapshots(db!)
+        .onSnapshots(_db!)
         .transform(_bookingsTransformer);
   }
 
   /// Listed for changes on a given rm booking
   Stream<DbRmBooking?> onRoomBooking(int id) {
-    return bookingsStore
+    return _bookingsStore
         .record(id)
-        .onSnapshot(db!)
+        .onSnapshot(_db!)
         .transform(_bookingTransformer);
   }
 
   Future clearAllRoomBookings() async {
-    await bookingsStore.delete(db!);
-    await getDatabaseFactory().deleteDatabase(db!.path);
+    await _bookingsStore.delete(_db!);
+    await getDatabaseFactory().deleteDatabase(_db!.path);
   }
 
   Future close() async {
-    await db!.close();
+    await _db!.close();
   }
 
   Future deleteDb() async {
-    await dbFactory.deleteDatabase(await fixPath(dbName));
+    await _dbFactory.deleteDatabase(await fixPath(_dbName));
   }
 }
 
