@@ -10,7 +10,7 @@ class UserProfileProvider {
   final DatabaseFactory _dbFactory;
   Database? _db;
 
-  final profilesStore = intMapStoreFactory.store(_userProfileStoreName);
+  final _profilesStore = intMapStoreFactory.store(_userProfileStoreName);
 
   UserProfileProvider(this._dbFactory);
 
@@ -28,7 +28,7 @@ class UserProfileProvider {
       });
 
   Future<DbUserProfile?> getProfile(int id) async {
-    var map = await profilesStore.record(id).get(_db!);
+    var map = await _profilesStore.record(id).get(_db!);
     if (map != null) {
       return DbUserProfile()
         ..fromMap(map)
@@ -45,17 +45,17 @@ class UserProfileProvider {
 
   Future saveProfile(DbUserProfile dbUserProfile) async {
     if (dbUserProfile.id != null) {
-      await profilesStore
+      await _profilesStore
           .record(dbUserProfile.id!)
           .put(_db!, dbUserProfile.toMap());
     } else {
-      dbUserProfile.id = await profilesStore.add(_db!, dbUserProfile.toMap());
+      dbUserProfile.id = await _profilesStore.add(_db!, dbUserProfile.toMap());
     }
   }
 
   Future deleteProfile(int? id) async {
     if (id != null) {
-      await profilesStore.record(id).delete(_db!);
+      await _profilesStore.record(id).delete(_db!);
     }
   }
 
@@ -72,7 +72,7 @@ class UserProfileProvider {
   });
 
   Stream<List<DbUserProfile>> onProfiles() {
-    return profilesStore
+    return _profilesStore
         .query(finder: Finder(sortOrders: [SortOrder('createdDt', false)]))
         .onSnapshots(_db!)
         .transform(_profilesTransformer);
@@ -80,14 +80,14 @@ class UserProfileProvider {
 
   /// Listed for changes on a given rm booking
   Stream<DbUserProfile?> onProfile(int id) {
-    return profilesStore
+    return _profilesStore
         .record(id)
         .onSnapshot(_db!)
         .transform(_profileTransformer);
   }
 
   Future clearAllProfiles() async {
-    await profilesStore.delete(_db!);
+    await _profilesStore.delete(_db!);
     await getDatabaseFactory().deleteDatabase(_db!.path);
   }
 
