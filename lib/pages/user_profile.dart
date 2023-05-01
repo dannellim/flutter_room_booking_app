@@ -50,8 +50,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return null;
   }
 
-  String _serviceDropdownValue = TestData.serviceList.first;
-  String _cellDropdownValue = TestData.cellList.first;
+  String _serviceDropdownValue = "";
+  String _cellDropdownValue = "";
 
   @override
   void initState() {
@@ -330,11 +330,21 @@ class _ProfilePageState extends State<ProfilePage> {
         break;
       }
     }
+    if (_serviceDropdownValue.trim().isEmpty) {
+      UiUtils.showAlertDialog("Error",
+          "Unable to find service within database. Please contact the administrator for help.");
+      _serviceDropdownValue = TestData.serviceList.last;
+    }
     for (var item in TestData.cellList) {
       if (item.toUpperCase().compareTo(_profile.cell.v!.toUpperCase()) == 0) {
         _cellDropdownValue = item;
         break;
       }
+    }
+    if (_cellDropdownValue.trim().isEmpty) {
+      UiUtils.showAlertDialog("Error",
+          "Unable to find cell within database. Please contact the administrator for help.");
+      _cellDropdownValue = TestData.cellList.last;
     }
   }
 

@@ -90,7 +90,6 @@ class SignupPageState extends State<SignUpPage> {
   }
 
   String _serviceDropdownValue = TestData.serviceList.first;
-
   String _cellDropdownValue = TestData.cellList.first;
 
   bool _is8Character = false;

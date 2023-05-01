@@ -61,10 +61,11 @@ class NavDrawer extends StatelessWidget {
               leading: const Icon(Icons.admin_panel_settings),
               title: const Text('Admin'),
               onTap: () => {
-                Navigator.pushReplacement(
+                Navigator.of(context).pop(),
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AdminPage()),
-                )
+                ),
               },
             ),
           ),

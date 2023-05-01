@@ -1,4 +1,19 @@
+import 'package:flutter/foundation.dart';
+
 class Utils {
+  static bool isWithinList(String data, List<String> list) {
+    bool result = false;
+    try {
+      result = list.any(
+          (item) => item.trim().toLowerCase() == data.trim().toLowerCase());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return result;
+  }
+
   static bool isSimpleStringsSame(String one, String two) {
     var first = one.toLowerCase().replaceAll(RegExp(r"\s+"), "");
     var second = two.toLowerCase().replaceAll(RegExp(r"\s+"), "");
