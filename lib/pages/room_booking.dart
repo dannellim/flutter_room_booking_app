@@ -1060,7 +1060,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             ..room.v = roomDropdownValue
             ..reason.v = reasonDropdownValue
             ..bookedBy.v = profile?.getName()
-            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+            ..createdDt = DateTime.now().millisecondsSinceEpoch
+            ..updatedDt = DateTime.now().millisecondsSinceEpoch);
         }
       } else {
         await dbRmBookingProvider.saveRmBooking(DbRmBooking()
@@ -1074,7 +1076,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
           ..room.v = roomDropdownValue
           ..reason.v = reasonDropdownValue
           ..bookedBy.v = profile?.getName()
-          ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+          ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+          ..createdDt = DateTime.now().millisecondsSinceEpoch
+          ..updatedDt = DateTime.now().millisecondsSinceEpoch);
       }
     } else if (_isRecurringDaily) {
       if (_rangeSelectionMode == RangeSelectionMode.toggledOn) {
@@ -1094,7 +1098,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
             ..room.v = roomDropdownValue
             ..reason.v = reasonDropdownValue
             ..bookedBy.v = profile?.getName()
-            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+            ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+            ..createdDt = DateTime.now().millisecondsSinceEpoch
+            ..updatedDt = DateTime.now().millisecondsSinceEpoch);
         }
       }
     } else if (_isRecurringWeekly) {
@@ -1119,7 +1125,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
                 ..bookedBy.v = profile?.getName()
-                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+                ..createdDt = DateTime.now().millisecondsSinceEpoch
+                ..updatedDt = DateTime.now().millisecondsSinceEpoch);
             }
           }
         }
@@ -1140,7 +1148,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
               ..bookedBy.v = profile?.getName()
-              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+              ..createdDt = DateTime.now().millisecondsSinceEpoch
+              ..updatedDt = DateTime.now().millisecondsSinceEpoch);
           }
         }
       }
@@ -1164,7 +1174,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
                 ..bookedBy.v = profile?.getName()
-                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+                ..createdDt = DateTime.now().millisecondsSinceEpoch
+                ..updatedDt = DateTime.now().millisecondsSinceEpoch);
             }
           }
         }
@@ -1184,7 +1196,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
               ..bookedBy.v = profile?.getName()
-              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+              ..createdDt = DateTime.now().millisecondsSinceEpoch
+              ..updatedDt = DateTime.now().millisecondsSinceEpoch);
           }
         }
       }
@@ -1212,7 +1226,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
                 ..room.v = roomDropdownValue
                 ..reason.v = reasonDropdownValue
                 ..bookedBy.v = profile?.getName()
-                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+                ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+                ..createdDt = DateTime.now().millisecondsSinceEpoch
+                ..updatedDt = DateTime.now().millisecondsSinceEpoch);
             }
           }
         }
@@ -1234,7 +1250,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
               ..room.v = roomDropdownValue
               ..reason.v = reasonDropdownValue
               ..bookedBy.v = profile?.getName()
-              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch);
+              ..bookedDate.v = DateTime.now().millisecondsSinceEpoch
+              ..createdDt = DateTime.now().millisecondsSinceEpoch
+              ..updatedDt = DateTime.now().millisecondsSinceEpoch);
           }
         }
       }

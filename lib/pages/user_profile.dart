@@ -282,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(DateFormat("dd MMM yyyy hh:mm a").format(
                                     DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.updatedDt.v!))),
+                                        _profile.updatedDt!))),
                               ]),
                           const SizedBox(
                             height: 16,
@@ -295,7 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(DateFormat("dd MMM yyyy hh:mm a").format(
                                     DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.createdDt.v!))),
+                                        _profile.createdDt!))),
                               ]),
                         ],
                       ))),
@@ -358,7 +358,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _profile.handphoneNumber.v = _numController.text;
       _profile.service.v = _serviceDropdownValue.trim().toUpperCase();
       _profile.cell.v = _cellDropdownValue.trim().toUpperCase();
-      _profile.updatedDt.v = DateTime.now().millisecondsSinceEpoch;
+      _profile.updatedDt = DateTime.now().millisecondsSinceEpoch;
       await userProfileProvider.saveProfile(_profile);
       result = true;
     } on Exception catch (e, s) {

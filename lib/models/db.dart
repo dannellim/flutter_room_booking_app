@@ -1,4 +1,3 @@
-
 import 'package:cv/cv.dart';
 
 export 'package:cv/cv.dart';
@@ -7,4 +6,6 @@ export 'package:cv/cv.dart';
 abstract class DbRecord extends CvModelBase {
   /// Record id.
   int? id;
+  int? createdDt;
+  int? updatedDt;
 }

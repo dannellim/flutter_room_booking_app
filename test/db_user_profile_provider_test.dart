@@ -18,7 +18,7 @@ void main() {
       await provider.open();
       await provider.saveProfile(DbUserProfile()
         ..username.v = "username"
-        ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+        ..createdDt = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onProfiles().first;
       expect(first.first.username.v, 'username');
       await provider.close();
@@ -29,12 +29,12 @@ void main() {
       await provider.open();
       await provider.saveProfile(DbUserProfile()
         ..username.v = "username"
-        ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+        ..createdDt = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onProfiles().first;
       await provider.saveProfile(DbUserProfile()
         ..id = first.first.id
         ..username.v = "test_edit"
-        ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+        ..createdDt = DateTime.now().millisecondsSinceEpoch);
       first = await provider.onProfiles().first;
       expect(first.first.username.v, 'test_edit');
       await provider.close();
@@ -45,7 +45,7 @@ void main() {
       await provider.open();
       await provider.saveProfile(DbUserProfile()
         ..username.v = "test_delete"
-        ..createdDt.v = DateTime.now().millisecondsSinceEpoch);
+        ..createdDt = DateTime.now().millisecondsSinceEpoch);
       var first = await provider.onProfiles().first;
       expect(first.length, 1);
       await provider.deleteProfile(first.first.id);
