@@ -536,9 +536,9 @@ class SignupPageState extends State<SignUpPage> {
         ..handphoneNumber.v = _numController.text.trim()
         ..service.v = _serviceDropdownValue.trim().toUpperCase()
         ..cell.v = _cellDropdownValue.trim().toUpperCase()
-        ..isAdmin.v = true
-        ..createdDt.v = DateTime.now().millisecondsSinceEpoch
-        ..updatedDt.v = DateTime.now().millisecondsSinceEpoch);
+        ..isAdmin.v = false
+        ..createdDt = DateTime.now().millisecondsSinceEpoch
+        ..updatedDt = DateTime.now().millisecondsSinceEpoch);
       result = saveSuccess;
     } on Exception catch (e, s) {
       // ignore: use_build_context_synchronously
