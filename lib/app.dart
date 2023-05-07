@@ -24,7 +24,7 @@ Future<void> init() async {
   dbRmBookingProvider.clearAllRoomBookings;
   userProfileProvider.clearAllProfiles;
   //for testing admin
-  userProfileProvider.saveProfile(DbUserProfile()
+  await userProfileProvider.saveProfile(DbUserProfile()
     ..id = DateTime.now().millisecondsSinceEpoch
     ..username.v = "admin@cor.sg".trim().toLowerCase()
     ..password.v =
@@ -33,10 +33,9 @@ Future<void> init() async {
     ..lastName.v = "Admin".trim().toUpperCase()
     ..email.v = "admin@cor.sg".trim().toLowerCase()
     ..handphoneNumber.v = "123456".trim()
-    ..service.v = TestData.roomList[0].toUpperCase()
-    ..cell.v = TestData.cellList[0].toUpperCase()
+    ..service.v = TestData.serviceList.first.toUpperCase()
+    ..cell.v = TestData.cellList.first.toUpperCase()
     ..isAdmin.v = true
-    ..createdDt = DateTime.now().millisecondsSinceEpoch
-    ..updatedDt = DateTime.now().millisecondsSinceEpoch);
+    ..isApproved.v = true);
   runApp(MyApp());
 }

@@ -537,6 +537,7 @@ class SignupPageState extends State<SignUpPage> {
         ..service.v = _serviceDropdownValue.trim().toUpperCase()
         ..cell.v = _cellDropdownValue.trim().toUpperCase()
         ..isAdmin.v = false
+        ..isApproved.v = false
         ..createdDt = DateTime.now().millisecondsSinceEpoch
         ..updatedDt = DateTime.now().millisecondsSinceEpoch);
       result = saveSuccess;

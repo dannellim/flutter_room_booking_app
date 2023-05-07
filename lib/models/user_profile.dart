@@ -12,6 +12,7 @@ class DbUserProfile extends DbRecord {
   final service = CvField<String>('service');
   final cell = CvField<String>('cell');
   final isAdmin = CvField<bool>('isAdmin');
+  final isApproved = CvField<bool>('isApproved');
 
   @override
   List<CvField> get fields => [
@@ -24,6 +25,7 @@ class DbUserProfile extends DbRecord {
         service,
         cell,
         isAdmin,
+        isApproved
       ];
 
   Map toJson() => {
@@ -36,6 +38,7 @@ class DbUserProfile extends DbRecord {
         'service': service,
         'cell': cell,
         'isAdmin': isAdmin,
+        'isApproved': isApproved,
         'createdDt': createdDt,
         'updatedDt': updatedDt,
       };

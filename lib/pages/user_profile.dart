@@ -282,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(DateFormat("dd MMM yyyy hh:mm a").format(
                                     DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.updatedDt!))),
+                                        _profile.updatedDt))),
                               ]),
                           const SizedBox(
                             height: 16,
@@ -295,7 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(DateFormat("dd MMM yyyy hh:mm a").format(
                                     DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.createdDt!))),
+                                        _profile.createdDt))),
                               ]),
                         ],
                       ))),

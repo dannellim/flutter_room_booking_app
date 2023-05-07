@@ -231,7 +231,8 @@ class _LoginPageState extends State<LoginPage> {
         await userProfileProvider.onProfiles().first);
     var profile = profiles.where((item) =>
         item.username.value?.toLowerCase() == email &&
-        item.password.value == password);
+        item.password.value == password &&
+        item.isApproved.value == true);
     if (profile.length == 1) {
       result = profile.first;
     }
