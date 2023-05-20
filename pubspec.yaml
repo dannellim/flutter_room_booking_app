@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.3 <3.0.0'
+  sdk: '>=2.19.3 <3.1.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -53,6 +53,8 @@ dependencies:
       ref: dart2_3
       version: '>=0.4.2'
   encrypt: ^5.0.1
+  otp: 3.1.2
+  flutter_otp_text_field: ^1.1.0+2
 
 dev_dependencies:
   flutter_test:
