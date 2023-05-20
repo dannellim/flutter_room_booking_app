@@ -5,19 +5,12 @@ import 'package:otp/otp.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:room_booking_app/constants.dart';
 import 'package:room_booking_app/services/nav_service.dart';
-import 'package:room_booking_app/utilities/ui_utils.dart';
 
 class OtpUtils {
   static String generateOtp(String secret) {
-    String result = "";
-    try {
-      result = OTP.generateTOTPCodeString(
-          secret, DateTime.now().millisecondsSinceEpoch,
-          algorithm: Algorithm.SHA1, isGoogle: true);
-    } catch (e) {
-      UiUtils.showAlertDialog("Error", e.toString());
-    }
-    return result;
+    return OTP.generateTOTPCodeString(
+        secret, DateTime.now().millisecondsSinceEpoch,
+        algorithm: Algorithm.SHA1, isGoogle: true);
   }
 
   static String generateSecret(String company, String email) {

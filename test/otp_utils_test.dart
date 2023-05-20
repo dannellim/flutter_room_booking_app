@@ -11,11 +11,13 @@ import 'package:room_booking_app/utilities/otp_utils.dart';
 void main() {
   group('otp utils', () {
     test('otp check', () async {
-      String secret = "email_address@email.com::cor.sg";
+      String secret = OtpUtils.generateSecret("cor", "email_address@email.com");
       String otp1 = OtpUtils.generateOtp(secret);
       String otp2 = OtpUtils.generateOtp(secret);
       expect(otp1, otp2);
-      String otp3 = OtpUtils.generateOtp("${secret}1");
+      String secret2 =
+          OtpUtils.generateSecret("cor1111", "email_address@email.com");
+      String otp3 = OtpUtils.generateOtp(secret2);
       expect(otp1 != otp3, true);
     });
   });
