@@ -36,14 +36,14 @@ class UiUtils {
         barrierDismissible: false,
         context: NavigationService.navigatorKey.currentContext!,
         builder: (_) {
-          return Dialog(
+          return const Dialog(
             // The background color
             backgroundColor: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
+              padding: EdgeInsets.symmetric(vertical: 32),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   // The loading indicator
                   CircularProgressIndicator(),
                   SizedBox(

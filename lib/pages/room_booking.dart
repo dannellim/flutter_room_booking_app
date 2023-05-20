@@ -1008,9 +1008,9 @@ class RoomBookingPageState extends State<RoomBookingPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Room Booking'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Do you wish to delete this room booking?'),
               ],
             ),

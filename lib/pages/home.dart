@@ -15,10 +15,10 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Home"),
       ),
       //drawer: const NavDrawer(),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[],
+          children: <Widget>[],
         ),
       ),
     );

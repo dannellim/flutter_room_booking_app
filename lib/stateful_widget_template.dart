@@ -9,12 +9,12 @@ class SamplePage extends StatefulWidget {
 class _SamplePageState extends State<SamplePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: null,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[],
+          children: <Widget>[],
         ),
       ),
     );
