@@ -117,8 +117,9 @@ class _AdminPageState extends State<AdminPage> {
                                                   return;
                                                 }
                                                 if (_dbUserProfile != null) {
-                                                  _dbUserProfile!.isApproved.v =
-                                                      false;
+                                                  userProfileProvider
+                                                      .deleteProfile(
+                                                          _dbUserProfile?.id);
                                                   UiUtils.showAlertDialog(
                                                       "Success",
                                                       "Account denied!");
