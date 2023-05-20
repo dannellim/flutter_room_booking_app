@@ -10,7 +10,7 @@ class OtpUtils {
   static String generateOtp(String secret) {
     return OTP.generateTOTPCodeString(
         secret, DateTime.now().millisecondsSinceEpoch,
-        algorithm: Algorithm.SHA1, isGoogle: true);
+        algorithm: Algorithm.SHA512, isGoogle: true);
   }
 
   static String generateSecret(String company, String email) {
@@ -19,7 +19,7 @@ class OtpUtils {
 
   static String generateQrData(String company, String email) {
     String base32secret = generateSecret(company, email);
-    return "otpauth://totp/$company:$email?secret=$base32secret&issuer=$company";
+    return "otpauth://totp/$company:$email?secret=$base32secret&issuer=$company&algorithm=SHA512&digits=6&period=30";
   }
 
   static Future<bool?> showOtpDialog(String email) async {
