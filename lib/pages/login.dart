@@ -209,14 +209,19 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(NavigationService.navigatorKey.currentContext!)
           .pop(); //close spinner
       if (result != null) {
-        Navigator.push(
-          NavigationService.navigatorKey.currentContext!,
-          MaterialPageRoute(
-              builder: (context) => RoomBookingPage(
-                    profileId: result.id!,
-                    isAdmin: result.isAdmin.v!,
-                  )),
-        );
+        if (result.isApproved.v == true) {
+          Navigator.push(
+            NavigationService.navigatorKey.currentContext!,
+            MaterialPageRoute(
+                builder: (context) => RoomBookingPage(
+                      profileId: result.id!,
+                      isAdmin: result.isAdmin.v!,
+                    )),
+          );
+        } else {
+          UiUtils.showAlertDialog("Error",
+              "Please contact your administrator to approve your account first.");
+        }
       } else {
         UiUtils.showAlertDialog("Error", "Invalid username or password.");
       }
@@ -231,8 +236,7 @@ class _LoginPageState extends State<LoginPage> {
         await userProfileProvider.onProfiles().first);
     var profile = profiles.where((item) =>
         item.username.value?.toLowerCase() == email &&
-        item.password.value == password &&
-        item.isApproved.value == true);
+        item.password.value == password);
     if (profile.length == 1) {
       result = profile.first;
     }
