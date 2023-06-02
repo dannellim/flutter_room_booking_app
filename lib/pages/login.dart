@@ -146,8 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                     top: 8, left: 32, right: 32, bottom: 0),
                 child: TextButton(
                   onPressed: () async {
-                    var result = await OtpUtils.showOtpDialog("admin@cor.com");
-                    print(result);
+                    //var result = await OtpUtils.showOtpDialog("admin@cor.com");
+                    //print(result);
+                    //await OtpUtils.showOtpAlert("admin@cor.sg");
                   },
                   child: const Text(
                     'Forgot Password',
@@ -207,15 +208,18 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(NavigationService.navigatorKey.currentContext!)
           .pop(); //close spinner
       if (result != null) {
-        if (result.isApproved.v == true) {
-          Navigator.push(
-            NavigationService.navigatorKey.currentContext!,
-            MaterialPageRoute(
-                builder: (context) => RoomBookingPage(
-                      profileId: result.id!,
-                      isAdmin: result.isAdmin.v!,
-                    )),
-          );
+        if (result.isApproved.v!) {
+          if (result.is2FA.v!) {
+            var ans = await OtpUtils.showOtpAlert(result.username.v!);
+            if (ans!) {
+              _loginToHome(result);
+            } else {
+              UiUtils.showAlertDialog(
+                  "Error", "OTP is wrong. Please try again.");
+            }
+          } else {
+            _loginToHome(result);
+          }
         } else {
           UiUtils.showAlertDialog("Error",
               "Please contact your administrator to approve your account first.");
@@ -224,6 +228,17 @@ class _LoginPageState extends State<LoginPage> {
         UiUtils.showAlertDialog("Error", "Invalid username or password.");
       }
     }
+  }
+
+  void _loginToHome(DbUserProfile result) {
+    Navigator.push(
+      NavigationService.navigatorKey.currentContext!,
+      MaterialPageRoute(
+          builder: (context) => RoomBookingPage(
+                profileId: result.id!,
+                isAdmin: result.isAdmin.v!,
+              )),
+    );
   }
 
   Future<DbUserProfile?> _loginLogic() async {
