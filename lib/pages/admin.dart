@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:room_booking_app/app.dart';
+import 'package:room_booking_app/constants.dart';
 import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/otp_utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
@@ -17,6 +20,7 @@ class _AdminPageState extends State<AdminPage> {
   final _cellController = TextEditingController();
   final _roomController = TextEditingController();
   final _reasonController = TextEditingController();
+  final _usernameController = TextEditingController();
   String _serviceDropdownValue = TestData.serviceList.first;
   String _cellDropdownValue = TestData.cellList.first;
   String _roomDropdownValue = TestData.roomList.first;
@@ -28,6 +32,7 @@ class _AdminPageState extends State<AdminPage> {
     _cellController.dispose();
     _roomController.dispose();
     _reasonController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -742,6 +747,83 @@ class _AdminPageState extends State<AdminPage> {
                               ),
                             ]),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Card(
+                        color: Colors.grey[100],
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              children: [
+                                const Text(
+                                    "Generate Google Authenticator Registration QR Code",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                TextFormField(
+                                  // The validator receives the text that the user has entered.
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter username to generate QR Code for user';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Username'),
+                                  inputFormatters: [LowerCaseTextFormatter()],
+                                  controller: _usernameController,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 3,
+                                    minimumSize: Size(
+                                        MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.height *
+                                            0.05),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {});
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Text('Generate',
+                                        style: TextStyle(fontSize: 16)),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Column(
+                                  children: [
+                                    QrImageView(
+                                      data: OtpUtils.generateQrData(
+                                          Constants.company,
+                                          _usernameController.text),
+                                      version: QrVersions.auto,
+                                      size: 200.0,
+                                    ),
+                                    const Text(
+                                        "Scan QR using Google Authenticator"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 32,
                     ),
                   ],
                 ),
