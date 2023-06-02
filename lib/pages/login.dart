@@ -250,8 +250,7 @@ class _LoginPageState extends State<LoginPage> {
     var profile = profiles.where((item) =>
         item.username.value?.toLowerCase() == email &&
         item.password.value == password);
-    if (profile.isNotEmpty) {
-      profile.toList().sort((a, b) => a.updatedDt.compareTo(b.updatedDt));
+    if (profile.length == 1) {
       result = profile.first;
     }
     return result;
