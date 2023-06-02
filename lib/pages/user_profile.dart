@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:room_booking_app/app.dart';
+import 'package:room_booking_app/constants.dart';
 import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/otp_utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
 import 'package:room_booking_app/utilities/utils.dart';
@@ -86,219 +89,330 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               body: Form(
                   key: _formKey,
-                  child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          TextFormField(
-                            // The validator receives the text that the user has entered.
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your first name';
-                              } else {
-                                return null;
-                              }
-                            },
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'First Name'),
-                            inputFormatters: [UpperCaseTextFormatter()],
-                            controller: _firstNameController,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          TextFormField(
-                            // The validator receives the text that the user has entered.
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your last name';
-                              } else {
-                                return null;
-                              }
-                            },
-                            inputFormatters: [UpperCaseTextFormatter()],
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Last Name',
-                            ),
-                            controller: _lastNameController,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          TextFormField(
-                            // The validator receives the text that the user has entered.
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (Utils.isEmailValid(value)) {
-                                return null;
-                              } else {
-                                return 'Invalid email address';
-                              }
-                            },
-                            inputFormatters: [LowerCaseTextFormatter()],
-                            controller: _emailController,
-                            onChanged: (text) => setState(() {}),
-                            decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                hintText: 'test@example.com',
-                                labelText:
-                                    'Email (This does NOT change your username. It will still be your old email.)',
-                                errorText: _errorText,
-                                suffixIcon: IconButton(
-                                    onPressed: null,
-                                    icon: Icon(
-                                      _emailValid ? Icons.check_circle : null,
-                                      color: Colors.green,
-                                    ))),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          TextFormField(
-                              // The validator receives the text that the user has entered.
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number';
-                                }
-                                if (value.length == 8) {
-                                  return null;
-                                } else {
-                                  return 'Invalid phone number';
-                                }
-                              },
-                              controller: _numController,
-                              onChanged: (text) => setState(() {}),
-                              decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  labelText: 'Handphone Number',
-                                  errorText: _numErrorText,
-                                  suffixIcon: IconButton(
-                                      onPressed: null,
-                                      icon: Icon(
-                                        _numVaild ? Icons.check_circle : null,
-                                        color: Colors.green,
-                                      ))),
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(8)
-                              ],
-                              keyboardType: TextInputType.number),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Service',
-                            ),
-                            isExpanded: true,
-                            value: _serviceDropdownValue,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            onChanged: (String? value) {
-                              // This is called when the user selects an item.
-                              setState(() {
-                                _serviceDropdownValue = value!;
-                              });
-                            },
-                            items: TestData.serviceList
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Cell Group',
-                            ),
-                            isExpanded: true,
-                            value: _cellDropdownValue,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            onChanged: (String? value) {
-                              // This is called when the user selects an item.
-                              setState(() {
-                                _cellDropdownValue = value!;
-                              });
-                            },
-                            items: TestData.cellList
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 3,
-                              minimumSize: Size(
-                                  MediaQuery.of(context).size.width,
-                                  MediaQuery.of(context).size.height * 0.05),
-                            ),
-                            onPressed: () async {
-                              // Validate returns true if the form is valid, or false otherwise.
-                              if (_formKey.currentState!.validate()) {
-                                var result =
-                                    await _updateProfile(widget.profileId);
-                                if (result) {
-                                  UiUtils.showAlertDialog("Success",
-                                      "Your profile has been updated!");
-                                  _isInitialized = false;
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  setState(() {});
-                                } else {
-                                  UiUtils.showAlertDialog("Failed",
-                                      "Your profile has NOT been updated!");
-                                }
-                              }
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text('Update',
-                                  style: TextStyle(fontSize: 16)),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Text("Last updated: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(DateFormat("dd MMM yyyy hh:mm a").format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.updatedDt))),
-                              ]),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Text("Created: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(DateFormat("dd MMM yyyy hh:mm a").format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                        _profile.createdDt))),
-                              ]),
-                        ],
-                      ))),
+                  child: SingleChildScrollView(
+                      child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              TextFormField(
+                                // The validator receives the text that the user has entered.
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your first name';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'First Name'),
+                                inputFormatters: [UpperCaseTextFormatter()],
+                                controller: _firstNameController,
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              TextFormField(
+                                // The validator receives the text that the user has entered.
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your last name';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                inputFormatters: [UpperCaseTextFormatter()],
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Last Name',
+                                ),
+                                controller: _lastNameController,
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              TextFormField(
+                                // The validator receives the text that the user has entered.
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (Utils.isEmailValid(value)) {
+                                    return null;
+                                  } else {
+                                    return 'Invalid email address';
+                                  }
+                                },
+                                inputFormatters: [LowerCaseTextFormatter()],
+                                controller: _emailController,
+                                onChanged: (text) => setState(() {}),
+                                decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    hintText: 'test@example.com',
+                                    labelText:
+                                        'Email (This does NOT change your username. It will still be your old email.)',
+                                    errorText: _errorText,
+                                    suffixIcon: IconButton(
+                                        onPressed: null,
+                                        icon: Icon(
+                                          _emailValid
+                                              ? Icons.check_circle
+                                              : null,
+                                          color: Colors.green,
+                                        ))),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              TextFormField(
+                                  // The validator receives the text that the user has entered.
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your phone number';
+                                    }
+                                    if (value.length == 8) {
+                                      return null;
+                                    } else {
+                                      return 'Invalid phone number';
+                                    }
+                                  },
+                                  controller: _numController,
+                                  onChanged: (text) => setState(() {}),
+                                  decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      labelText: 'Handphone Number',
+                                      errorText: _numErrorText,
+                                      suffixIcon: IconButton(
+                                          onPressed: null,
+                                          icon: Icon(
+                                            _numVaild
+                                                ? Icons.check_circle
+                                                : null,
+                                            color: Colors.green,
+                                          ))),
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(8)
+                                  ],
+                                  keyboardType: TextInputType.number),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Service',
+                                ),
+                                isExpanded: true,
+                                value: _serviceDropdownValue,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                onChanged: (String? value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    _serviceDropdownValue = value!;
+                                  });
+                                },
+                                items: TestData.serviceList
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Cell Group',
+                                ),
+                                isExpanded: true,
+                                value: _cellDropdownValue,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                onChanged: (String? value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    _cellDropdownValue = value!;
+                                  });
+                                },
+                                items: TestData.cellList
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 3,
+                                  minimumSize: Size(
+                                      MediaQuery.of(context).size.width,
+                                      MediaQuery.of(context).size.height *
+                                          0.05),
+                                ),
+                                onPressed: () async {
+                                  // Validate returns true if the form is valid, or false otherwise.
+                                  if (_formKey.currentState!.validate()) {
+                                    var result = await _updateProfile();
+                                    if (result) {
+                                      UiUtils.showAlertDialog("Success",
+                                          "Your profile has been updated!");
+                                      _isInitialized = false;
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      setState(() {});
+                                    } else {
+                                      UiUtils.showAlertDialog("Failed",
+                                          "Your profile has NOT been updated!");
+                                    }
+                                  }
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Text('Update',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    const Text("Last updated: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    Text(DateFormat("dd MMM yyyy hh:mm a")
+                                        .format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                _profile.updatedDt))),
+                                  ]),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    const Text("Created: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    Text(DateFormat("dd MMM yyyy hh:mm a")
+                                        .format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                _profile.createdDt))),
+                                  ]),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                children: [
+                                  Switch(
+                                    value: _profile.is2FA.v!,
+                                    activeColor: Colors.green,
+                                    onChanged: (bool value) async {
+                                      // This is called when the user toggles the switch.
+                                      setState(() {
+                                        _profile.is2FA.v = value;
+                                        _profile.updatedDt = DateTime.now()
+                                            .millisecondsSinceEpoch;
+                                      });
+                                      await userProfileProvider
+                                          .saveProfile(_profile);
+                                    },
+                                  ),
+                                  _profile.is2FA.v!
+                                      ? const Text("Turn off 2FA")
+                                      : const Text("Turn on 2FA"),
+                                ],
+                              ),
+                              Visibility(
+                                  visible: _profile.is2FA.v!,
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      const Text("First time?"),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      const Text(
+                                          "Install Google Authenticator on your phone by scanning the QR Codes below for your respective device."),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      const Text(
+                                          "Follow the steps below to register your account for OTP generation."),
+                                      const SizedBox(
+                                        height: 32,
+                                      ),
+                                      Flex(
+                                        direction:
+                                            MediaQuery.of(context).size.width >=
+                                                    768
+                                                ? Axis.horizontal
+                                                : Axis.vertical,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              QrImageView(
+                                                data: Constants
+                                                    .authenticatorAppleStoreUrl,
+                                                version: QrVersions.auto,
+                                                size: 200.0,
+                                              ),
+                                              const Text("Apple Store"),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              QrImageView(
+                                                data: Constants
+                                                    .authenticatorGoogleStoreUrl,
+                                                version: QrVersions.auto,
+                                                size: 200.0,
+                                              ),
+                                              const Text("Google Play Store"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 64,
+                                      ),
+                                      const Text(
+                                          "Open your Google Authenticator and scan the QR Code below to register your account for OTP generation."),
+                                      const SizedBox(
+                                        height: 32,
+                                      ),
+                                      Column(
+                                        children: [
+                                          QrImageView(
+                                            data: OtpUtils.generateQrData(
+                                                Constants.company,
+                                                _profile.username.v!),
+                                            version: QrVersions.auto,
+                                            size: 200.0,
+                                          ),
+                                          const Text(
+                                              "Scan QR using Google Authenticator"),
+                                        ],
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          )))),
             );
           } else {
             return const CircularProgressIndicator();
@@ -348,7 +462,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<bool> _updateProfile(int profileId) async {
+  Future<bool> _updateProfile() async {
     UiUtils.loadingSpinner();
     bool result = false;
     try {
