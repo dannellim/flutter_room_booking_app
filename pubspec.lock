@@ -215,10 +215,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      sha256: "4c3f04bfb64d3efd508d06b41b825542f08122d30bda4933fb95c069d22a4fa3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.6"
+    version: "1.0.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -279,10 +279,10 @@ packages:
     dependency: transitive
     description:
       name: logging
-      sha256: "04094f2eb032cbb06c6f6e8d3607edcfcb0455e2bb6cbc010cb01171dcb64e6d"
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   matcher:
     dependency: transitive
     description:
@@ -375,10 +375,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_linux
-      sha256: "2ae08f2216225427e64ad224a24354221c2c7907e448e6e0e8b57b1eb9f10ad1"
+      sha256: ffbb8cc9ed2c9ec0e4b7a541e56fd79b138e8f47d2fb86815f15358a349b3b57
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.10"
+    version: "2.1.11"
   path_provider_platform_interface:
     dependency: transitive
     description:
@@ -471,10 +471,10 @@ packages:
     dependency: "direct main"
     description:
       name: sembast
-      sha256: a784dbcf313ff38a7f57249694c64a6bcf79f704dbec127958459a7737716830
+      sha256: "74f6c57e2d230c55287372830239701286628b81ceb06a5507d7686a6d7d4b44"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.4"
+    version: "3.4.5"
   sembast_sqflite:
     dependency: transitive
     description:
@@ -681,7 +681,7 @@ packages:
     description:
       path: "packages/lints_flutter"
       ref: dart2_3
-      resolved-ref: "518ae6c90b5b3499c4d7ea02774795a680f9d75c"
+      resolved-ref: "7b3e2f583dbf25018e52006754ecfcddeea30ecf"
       url: "https://github.com/tekartik/common_flutter.dart"
     source: git
     version: "0.2.1"
