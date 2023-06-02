@@ -11,7 +11,7 @@ class _SamplePageState extends State<SamplePage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: null,
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[],
