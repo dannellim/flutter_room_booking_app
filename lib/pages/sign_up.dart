@@ -538,6 +538,7 @@ class SignupPageState extends State<SignUpPage> {
         ..cell.v = _cellDropdownValue.trim().toUpperCase()
         ..isAdmin.v = false
         ..isApproved.v = false
+        ..is2FA.v = false
         ..createdDt = DateTime.now().millisecondsSinceEpoch
         ..updatedDt = DateTime.now().millisecondsSinceEpoch);
       result = saveSuccess;

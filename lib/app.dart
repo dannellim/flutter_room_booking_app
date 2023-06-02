@@ -35,6 +35,7 @@ Future<void> init() async {
     ..handphoneNumber.v = "123456".trim()
     ..service.v = TestData.serviceList.first.toUpperCase()
     ..cell.v = TestData.cellList.first.toUpperCase()
+    ..is2FA.v = false
     ..isAdmin.v = true
     ..isApproved.v = true);
   runApp(MyApp());
