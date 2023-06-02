@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:room_booking_app/app.dart';
 import 'package:room_booking_app/constants.dart';
 import 'package:room_booking_app/models/user_profile.dart';
+import 'package:room_booking_app/pages/change_password.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/test_data.dart';
 import 'package:room_booking_app/utilities/otp_utils.dart';
@@ -285,6 +286,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               const SizedBox(
                                 height: 16,
                               ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 3,
+                                  minimumSize: Size(
+                                      MediaQuery.of(context).size.width,
+                                      MediaQuery.of(context).size.height *
+                                          0.05),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChangePasswordPage(
+                                                  profileId: _profile.id!)));
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Text('Change Password',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -322,7 +348,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                       _profile.is2FA.v = value;
                                       _profile.updatedDt =
                                           DateTime.now().millisecondsSinceEpoch;
-                                      await _updateProfile();
+                                      var result = await _updateProfile();
+                                      if (result) {
+                                        UiUtils.showAlertDialog("Success",
+                                            "Your profile has been updated!");
+                                        _isInitialized = false;
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                        setState(() {});
+                                      } else {
+                                        UiUtils.showAlertDialog("Failed",
+                                            "Your profile has NOT been updated!");
+                                      }
                                     },
                                   ),
                                   _profile.is2FA.v!
