@@ -319,14 +319,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     value: _profile.is2FA.v!,
                                     activeColor: Colors.green,
                                     onChanged: (bool value) async {
-                                      // This is called when the user toggles the switch.
-                                      setState(() {
-                                        _profile.is2FA.v = value;
-                                        _profile.updatedDt = DateTime.now()
-                                            .millisecondsSinceEpoch;
-                                      });
-                                      await userProfileProvider
-                                          .saveProfile(_profile);
+                                      _profile.is2FA.v = value;
+                                      _profile.updatedDt =
+                                          DateTime.now().millisecondsSinceEpoch;
+                                      await _updateProfile();
                                     },
                                   ),
                                   _profile.is2FA.v!
@@ -408,6 +404,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           const Text(
                                               "Scan QR using Google Authenticator"),
                                         ],
+                                      ),
+                                      const SizedBox(
+                                        height: 32,
                                       ),
                                     ],
                                   ))

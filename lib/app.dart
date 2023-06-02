@@ -32,7 +32,7 @@ Future<void> init() async {
     ..firstName.v = "The".trim().toUpperCase()
     ..lastName.v = "Admin".trim().toUpperCase()
     ..email.v = "admin@cor.sg".trim().toLowerCase()
-    ..handphoneNumber.v = "123456".trim()
+    ..handphoneNumber.v = "12345678".trim()
     ..service.v = TestData.serviceList.first.toUpperCase()
     ..cell.v = TestData.cellList.first.toUpperCase()
     ..is2FA.v = false
