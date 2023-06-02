@@ -21,11 +21,9 @@ Future<void> init() async {
   userProfileProvider = UserProfileProvider(databaseFactory);
   await dbRmBookingProvider.ready;
   await userProfileProvider.ready;
-  dbRmBookingProvider.clearAllRoomBookings;
-  userProfileProvider.clearAllProfiles;
   //for testing admin
   await userProfileProvider.saveProfile(DbUserProfile()
-    ..id = DateTime.now().millisecondsSinceEpoch
+    ..id = 1
     ..username.v = "admin@cor.sg".trim().toLowerCase()
     ..password.v =
         CryptoUtils.encrypt("admin@cor.sg".trim().toLowerCase(), "Admin@123")
@@ -33,8 +31,8 @@ Future<void> init() async {
     ..lastName.v = "Admin".trim().toUpperCase()
     ..email.v = "admin@cor.sg".trim().toLowerCase()
     ..handphoneNumber.v = "12345678".trim()
-    ..service.v = TestData.serviceList.first.toUpperCase()
-    ..cell.v = TestData.cellList.first.toUpperCase()
+    ..service.v = TestData.serviceList.last.toUpperCase()
+    ..cell.v = TestData.cellList.last.toUpperCase()
     ..is2FA.v = false
     ..isAdmin.v = true
     ..isApproved.v = true);
