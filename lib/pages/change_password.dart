@@ -118,9 +118,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           controller: _oldPassController,
                           obscureText: !_oldPasswordVisible,
                           // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            return Utils.passwordCheck(value);
-                          },
+                          // validator: (value) {
+                          //   return Utils.passwordCheck(value);
+                          // },
                           onChanged: (text) => setState(() {}),
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
