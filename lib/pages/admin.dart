@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:random_password_generator/random_password_generator.dart';
 import 'package:room_booking_app/app.dart';
 import 'package:room_booking_app/constants.dart';
 import 'package:room_booking_app/models/user_profile.dart';
 import 'package:room_booking_app/test_data.dart';
+import 'package:room_booking_app/utilities/crypto_utils.dart';
 import 'package:room_booking_app/utilities/otp_utils.dart';
 import 'package:room_booking_app/utilities/text_formatters.dart';
 import 'package:room_booking_app/utilities/ui_utils.dart';
@@ -37,7 +39,10 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   List<DbUserProfile> _profiles = List.empty();
-  DbUserProfile? _dbUserProfile;
+  List<DbUserProfile> _toApproveProfiles = List.empty();
+  List<DbUserProfile> _toResetProfiles = List.empty();
+  DbUserProfile? _toApproveDbUserProfile;
+  DbUserProfile? _toResetDbUserProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +55,17 @@ class _AdminPageState extends State<AdminPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               _profiles = snapshot.data!;
-              _profiles = _profiles
+              _toApproveProfiles = _profiles
                   .where((item) => item.isApproved.value == false)
                   .toList();
-              if (_profiles.isNotEmpty) {
-                _dbUserProfile = _profiles.first;
+              _toResetProfiles = _profiles
+                  .where((item) => item.isPasswordReset.value == true)
+                  .toList();
+              if (_toApproveProfiles.isNotEmpty) {
+                _toApproveDbUserProfile = _toApproveProfiles.first;
+              }
+              if (_toResetProfiles.isNotEmpty) {
+                _toResetDbUserProfile = _toResetProfiles.first;
               }
             }
             return SingleChildScrollView(
@@ -64,10 +75,126 @@ class _AdminPageState extends State<AdminPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Card(
+                        color: Colors.grey[100],
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: _toResetProfiles.isNotEmpty &&
+                                  _toResetDbUserProfile != null
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    DropdownButtonFormField<DbUserProfile>(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: 'Accounts to be reset',
+                                      ),
+                                      isExpanded: true,
+                                      value: _toResetDbUserProfile,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      onChanged: (DbUserProfile? value) {
+                                        // This is called when the user selects an item.
+                                        setState(() {
+                                          _toResetDbUserProfile = value!;
+                                        });
+                                      },
+                                      items: _toResetProfiles
+                                          .map<DropdownMenuItem<DbUserProfile>>(
+                                              (DbUserProfile value) {
+                                        return DropdownMenuItem<DbUserProfile>(
+                                          value: value,
+                                          child: Text(value.username.v!),
+                                        );
+                                      }).toList(),
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 3,
+                                        minimumSize: Size(
+                                            MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.height *
+                                                0.05),
+                                      ),
+                                      onPressed: () async {
+                                        final password =
+                                            RandomPasswordGenerator();
+                                        String newPassword =
+                                            password.randomPassword(
+                                                letters: true,
+                                                uppercase: true,
+                                                numbers: true,
+                                                specialChar: true);
+                                        _toResetDbUserProfile!.password.v =
+                                            CryptoUtils.encrypt(
+                                                _toResetDbUserProfile!
+                                                    .username.v!
+                                                    .trim()
+                                                    .toLowerCase(),
+                                                newPassword);
+                                        _toResetDbUserProfile!
+                                            .isPasswordReset.v = false;
+                                        await userProfileProvider.saveProfile(
+                                            _toResetDbUserProfile!);
+                                        UiUtils.showCustomAlertDialog(
+                                            const Text("Success",
+                                                textAlign: TextAlign.center),
+                                            RichText(
+                                              textAlign: TextAlign.center,
+                                              text: TextSpan(
+                                                // Note: Styles for TextSpans must be explicitly defined.
+                                                // Child text spans will inherit styles from parent
+                                                style: const TextStyle(
+                                                  fontSize: 16.0,
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text:
+                                                          _toResetDbUserProfile!
+                                                              .username.v,
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  const TextSpan(
+                                                      text:
+                                                          '\n\nhas been reset with a new password\n\n'),
+                                                  TextSpan(
+                                                      text: newPassword,
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                ],
+                                              ),
+                                              //"Account ${_toResetDbUserProfile!.username.v} has been reset with a new password.\n$newPassword"
+                                            ));
+                                        setState(() {});
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(16),
+                                        child: Text('Reset',
+                                            style: TextStyle(fontSize: 16)),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                  ],
+                                )
+                              : const Text(
+                                  'No accounts to reset',
+                                  textAlign: TextAlign.left,
+                                ),
+                        )),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Card(
                       color: Colors.grey[100],
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: _profiles.isNotEmpty && _dbUserProfile != null
+                        child: _toApproveProfiles.isNotEmpty &&
+                                _toApproveDbUserProfile != null
                             ? Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -77,15 +204,15 @@ class _AdminPageState extends State<AdminPage> {
                                         labelText: 'Accounts to be approved',
                                       ),
                                       isExpanded: true,
-                                      value: _dbUserProfile,
+                                      value: _toApproveDbUserProfile,
                                       icon: const Icon(Icons.arrow_drop_down),
                                       onChanged: (DbUserProfile? value) {
                                         // This is called when the user selects an item.
                                         setState(() {
-                                          _dbUserProfile = value!;
+                                          _toApproveDbUserProfile = value!;
                                         });
                                       },
-                                      items: _profiles
+                                      items: _toApproveProfiles
                                           .map<DropdownMenuItem<DbUserProfile>>(
                                               (DbUserProfile value) {
                                         return DropdownMenuItem<DbUserProfile>(
@@ -115,16 +242,19 @@ class _AdminPageState extends State<AdminPage> {
                                             ),
                                             onPressed: () async {
                                               setState(() {
-                                                if (_profiles.isEmpty) {
+                                                if (_toApproveProfiles
+                                                    .isEmpty) {
                                                   UiUtils.showAlertDialog(
                                                       "Error",
                                                       "Nothing to deny!");
                                                   return;
                                                 }
-                                                if (_dbUserProfile != null) {
+                                                if (_toApproveDbUserProfile !=
+                                                    null) {
                                                   userProfileProvider
                                                       .deleteProfile(
-                                                          _dbUserProfile?.id);
+                                                          _toApproveDbUserProfile
+                                                              ?.id);
                                                   UiUtils.showAlertDialog(
                                                       "Success",
                                                       "Account denied!");
@@ -162,18 +292,19 @@ class _AdminPageState extends State<AdminPage> {
                                             ),
                                             onPressed: () async {
                                               setState(() {
-                                                if (_profiles.isEmpty) {
+                                                if (_toApproveProfiles
+                                                    .isEmpty) {
                                                   UiUtils.showAlertDialog(
                                                       "Error",
                                                       "Nothing to approve!");
                                                   return;
                                                 }
-                                                if (_dbUserProfile != null) {
-                                                  _dbUserProfile!.isApproved.v =
-                                                      true;
-                                                  userProfileProvider
-                                                      .saveProfile(
-                                                          _dbUserProfile!);
+                                                if (_toApproveDbUserProfile !=
+                                                    null) {
+                                                  _toApproveDbUserProfile!
+                                                      .isApproved.v = true;
+                                                  userProfileProvider.saveProfile(
+                                                      _toApproveDbUserProfile!);
                                                   UiUtils.showAlertDialog(
                                                       "Success",
                                                       "Account approved!");
@@ -793,7 +924,7 @@ class _AdminPageState extends State<AdminPage> {
                                         MediaQuery.of(context).size.height *
                                             0.05),
                                   ),
-                                  onPressed: () async {
+                                  onPressed: () {
                                     setState(() {});
                                   },
                                   child: const Padding(
