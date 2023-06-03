@@ -4,15 +4,16 @@ import 'package:intl/intl.dart';
 import 'package:room_booking_app/models/db.dart';
 
 class DbRmBooking extends DbRecord {
-  final code = CvField<String>('code');
-  final startDate = CvField<String>('startDate');
-  final startTime = CvField<String>('startTime');
-  final endDate = CvField<String>('endDate');
-  final endTime = CvField<String>('endTime');
-  final room = CvField<String>('room');
-  final reason = CvField<String>('reason');
-  final bookedBy = CvField<String>('bookedBy');
-  final bookedDate = CvField<int>('bookedDate');
+  final code = CvField<String>('code', '');
+  final startDate = CvField<String>('startDate', '');
+  final startTime = CvField<String>('startTime', '');
+  final endDate = CvField<String>('endDate', '');
+  final endTime = CvField<String>('endTime', '');
+  final room = CvField<String>('room', '');
+  final reason = CvField<String>('reason', '');
+  final bookedBy = CvField<String>('bookedBy', '');
+  final bookedDate =
+      CvField<int>('bookedDate', DateTime.now().millisecondsSinceEpoch);
 
   @override
   List<CvField> get fields => [
