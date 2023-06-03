@@ -88,7 +88,6 @@ class UserProfileProvider {
 
   Future clearAllProfiles() async {
     await _profilesStore.delete(_db!);
-    await getDatabaseFactory().deleteDatabase(_db!.path);
   }
 
   Future close() async {

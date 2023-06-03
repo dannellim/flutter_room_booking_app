@@ -21,20 +21,26 @@ Future<void> init() async {
   userProfileProvider = UserProfileProvider(databaseFactory);
   await dbRmBookingProvider.ready;
   await userProfileProvider.ready;
+
   //for testing admin
-  await userProfileProvider.saveProfile(DbUserProfile()
-    ..id = 1
-    ..username.v = "admin@cor.sg".trim().toLowerCase()
-    ..password.v =
-        CryptoUtils.encrypt("admin@cor.sg".trim().toLowerCase(), "Admin@123")
-    ..firstName.v = "The".trim().toUpperCase()
-    ..lastName.v = "Admin".trim().toUpperCase()
-    ..email.v = "admin@cor.sg".trim().toLowerCase()
-    ..handphoneNumber.v = "12345678".trim()
-    ..service.v = TestData.serviceList.last.toUpperCase()
-    ..cell.v = TestData.cellList.last.toUpperCase()
-    ..is2FA.v = false
-    ..isAdmin.v = true
-    ..isApproved.v = true);
+  int adminId = 888;
+  var profiles = await userProfileProvider.getProfile(adminId);
+  if (profiles == null) {
+    await userProfileProvider.saveProfile(DbUserProfile()
+      ..id = adminId
+      ..username.v = "admin@cor.sg".trim().toLowerCase()
+      ..password.v =
+          CryptoUtils.encrypt("admin@cor.sg".trim().toLowerCase(), "Admin@123")
+      ..firstName.v = "The".trim().toUpperCase()
+      ..lastName.v = "Admin".trim().toUpperCase()
+      ..email.v = "admin@cor.sg".trim().toLowerCase()
+      ..handphoneNumber.v = "12345678".trim()
+      ..service.v = TestData.serviceList.last.toUpperCase()
+      ..cell.v = TestData.cellList.last.toUpperCase()
+      ..is2FA.v = false
+      ..isAdmin.v = true
+      ..isApproved.v = true);
+  }
+
   runApp(MyApp());
 }

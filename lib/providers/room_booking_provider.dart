@@ -88,7 +88,6 @@ class DbRmBookingProvider {
 
   Future clearAllRoomBookings() async {
     await _bookingsStore.delete(_db!);
-    await getDatabaseFactory().deleteDatabase(_db!.path);
   }
 
   Future close() async {
