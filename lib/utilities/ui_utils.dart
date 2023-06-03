@@ -2,6 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 
 class UiUtils {
+  static void showCustomAlertDialog(Text title, RichText message,
+      [Text btnText = const Text("OK")]) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: btnText,
+      onPressed: () {
+        Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: title,
+      content: message,
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   static void showAlertDialog(String title, String message,
       [String btnText = "OK"]) {
     // set up the button
