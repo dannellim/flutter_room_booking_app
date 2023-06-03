@@ -45,16 +45,16 @@ class NavDrawer extends StatelessWidget {
               // )
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
-            onTap: () => {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.feedback),
-            title: const Text('Feedback'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.info),
+          //   title: const Text('About'),
+          //   onTap: () => {},
+          // ),
+          // ListTile(
+          //   leading: const Icon(Icons.feedback),
+          //   title: const Text('Feedback'),
+          //   onTap: () => {Navigator.of(context).pop()},
+          // ),
           Visibility(
             visible: isAdmin,
             child: ListTile(
