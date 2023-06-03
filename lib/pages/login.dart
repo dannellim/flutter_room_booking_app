@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:room_booking_app/app.dart';
 import 'package:room_booking_app/models/user_profile.dart';
+import 'package:room_booking_app/pages/forget_password.dart';
 import 'package:room_booking_app/pages/room_booking.dart';
 import 'package:room_booking_app/services/nav_service.dart';
 import 'package:room_booking_app/utilities/crypto_utils.dart';
@@ -146,9 +147,11 @@ class _LoginPageState extends State<LoginPage> {
                     top: 8, left: 32, right: 32, bottom: 0),
                 child: TextButton(
                   onPressed: () async {
-                    //var result = await OtpUtils.showOtpDialog("admin@cor.com");
-                    //print(result);
-                    //await OtpUtils.showOtpAlert("admin@cor.sg");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgetPasswordPage()),
+                    );
                   },
                   child: const Text(
                     'Forgot Password',
